@@ -1,0 +1,41 @@
+WHAT´S __INIT__ FOR ME?
+
+PRACTICALITIES:
+* UML
+* gitignore?
+
+
+PARAMETERS
+* Heart rate increase, uphill
+* Expected life span everyday exercise lifestyle vs sedentary lifestyle
+* Perspiration indicator, stress :)
+* Time:
+  - moving to and from vehicle
+  - find a parking lot, distance from location
+  - change of clothes
+* Different speeds depending on type of cycling
+* Traffic lights
+* Rush hour traffic, time of day
+* Parking lot data
+* Weather conditions
+* City/countryside templates
+
+UI
+* Choose between different cities with different topography
+
+GAMIFICATION
+* How number of cycling days impacts the life span expectancy
+* How number of cycling days reduces CO2 emissions
+* Show with diagrams
+* Compare data on week to week-basis
+* Try to break records
+* Achieve the 150 minutes of physical activity
+* Track records on certain distances (Strava)
+* Log distances and time
+
+LINKS
+
+
+IN THE FUTURE
+* Use coordinates/Google Maps/What3Words API to calculate distance
+* Make a web solution
