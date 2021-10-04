@@ -1,0 +1,35 @@
+Run:
+* Communicates with the user
+   - Do you want to go by bike or car?
+       vehicle = input
+   - Estimate the distance you want to travel:
+   - How many minutes walk is it to your vehicle(bike/car)?
+   - How many minutes walk is it from your parking location to your final destination
+* Calls chosen functions
+
+Class Vehicle():
+@abstractmethod
+total_travel_time(distance, parking_distance):
+   pass
+
+@abstractmethod
+calc_travel_time(distance):
+   pass
+
+@abstractmethod
+
+
+Class Cycling(Vehicle):
+total_travel_time(distance/travel_time, parking_distance, time_for_change=0):
+   return
+
+calc_travel_time(distance, speed=None, weather_conditions=0):
+   return travel_time
+
+Class Driving(Vehicle):
+total_travel_time(distance/travel_time, parking_distance, rush_hour=False):
+   return
+
+calc_travel_time(distance, rush_hour=False):
+   return travel_time
+
