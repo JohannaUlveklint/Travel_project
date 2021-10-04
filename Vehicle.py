@@ -1,16 +1,14 @@
+import Bike
+
+
 class Vehicle:
-    @abstractmethod
-    def total_travel_time(self, distance, parking_distance):
-        pass
+    def __init__(self, speed):
+        self.speed = speed
 
-    @abstractmethod
-    def calc_travel_time(self, distance):
-        pass
+    def to_and_from_vehicle(self, to_vehicle, to_end_destination):
+        walking_time = to_vehicle + to_end_destination
+        return walking_time
 
-
-def main():
-    pass
-
-
-if __name__ == '__main__':
-    main()
+    def run(self):
+        to_and_from_vehicle(to_vehicle, to_end_destination)
+        total_time(user_vehicle, walking_time, distance)
