@@ -34,7 +34,14 @@ GAMIFICATION
 * Log distances and time
 
 LINKS
-
+# Average spped cycling
+https://cyclinguphill.com/average-speeds-cycling/
+# Average traffic speed in London
+https://www.london.gov.uk/questions/2019/19767
+# Statistics for traffic in Gothenburg sorted by street
+https://goteborg.se/wps/portal/start/gator-vagar-och-torg/gator-och-vagar/statistik-om-trafiken/trafikmangder-pa-olika
+# Traffic and speed data
+https://www.trafikverket.se/tjanster/trafiktjanster/Vagtrafik--och-hastighetsdata/fordonsfloden-och-hastigheter/
 
 IN THE FUTURE
 * Use coordinates/Google Maps/What3Words API to calculate distance
