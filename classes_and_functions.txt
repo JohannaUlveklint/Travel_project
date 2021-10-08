@@ -7,6 +7,15 @@ Run:
    - How many minutes walk is it from your parking location to your final destination
 * Calls chosen functions
 
+Class Trips():
+* log trips
+* records
+* weekly data
+
+Class Presentation():
+* travel_questions()
+* diagrams
+
 Class Vehicle():
 @abstractmethod
 total_travel_time(distance, parking_distance):

@@ -25,7 +25,7 @@ UI
 
 GAMIFICATION
 * How number of cycling days impacts the life span expectancy
-* How number of cycling days reduces CO2 emissions
+* How number of cycling days reduces CO2 emissions, compare with "if you´re really into apples you could eat ..."
 * Show with diagrams
 * Compare data on week to week-basis
 * Try to break records
