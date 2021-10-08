@@ -1,0 +1,17 @@
+Colorprint:
+Interactive - green
+print('We start by calculating the travel time if you go by car.')
+print('Please choose "m" for moderate tempo cyclist or "f" for fast cyclist.')
+print('Now we are going to calculate the travel time if you go by bike.')
+print('But before we can do that we have a question for you:')
+
+Result info - magenta
+print(f'If you go this distance by car the total estimated travel time is {time} minutes.')
+
+Announcement - yellow
+print('The expected average speed including stopping for traffic lights will be 50 km/h.')
+print('Five minutes for looking for a parking lot will be added to the total time.')
+print('The expected average speed including stopping for traffic lights will be 15 km/h.')
+print('The expected average speed including stopping for traffic lights will be 20 km/h.')
+print('Five minutes for change from training clothes will be included.')
+
