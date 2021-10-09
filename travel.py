@@ -5,7 +5,7 @@ class Travel:
     def __init__(self):
         self.distance = 0
         self.walking_time = 0
-        self.speed = 0
+        self.speed = None
         self.changing_time = 0
         self.search_parking_time = 0
 
@@ -66,7 +66,13 @@ class Travel:
                               f'to the total time.')
         time = (self.distance / self.speed) * 60 + self.walking_time + self.search_parking_time
         color_print('magenta', f'If you go this distance by car the total estimated travel time is {time} minutes.')
-        return time  # Do I need to return time?
+        return time  # Do I need to return time? Will I use that variable in future statistics?
+
+    def rush_hour_lite(self):
+        rush_hour = input('Are you going to drive within rush hours? y/n ')
+        while rush_hour != 'y' and rush_hour != 'n':
+            if rush_hour.lower() == 'y':
+                self.speed = 40
 
     def rush_hour(self):
         rush_hour = input('Are you going to drive within rush hours? y/n ')
@@ -82,7 +88,6 @@ class Travel:
                 print(self.search_parking_time)
             else:
                 rush_hour = input('Are you going to drive within rush hours? Please type [y] for yes or [n] for no: ')
-        print(self.speed)
 
     def time_by_bike(self):
         color_print('green', '\nNow we are going to calculate the travel time if you go by bike.')
@@ -111,6 +116,3 @@ class Travel:
 
         color_print('yellow', f'The expected average speed including stopping '
                               f'for traffic lights will be {self.speed} km/h.')
-
-
-
