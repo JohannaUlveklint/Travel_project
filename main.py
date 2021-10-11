@@ -1,11 +1,12 @@
 from travel import Travel
+from trips import Trips
 
 
 def main():
-    traveller1 = Travel()
-    traveller1.travel_questions()
-    traveller1.time_by_car()  # The data is stored in the traveller obj and don´t have to be passed
-    traveller1.time_by_bike()
+    traveller = Travel()
+    traveller.travel_questions()
+    traveller.time_by_car()  # The data is stored in the traveller obj and don´t have to be passed
+    traveller.time_by_bike()
 
 
 if __name__ == '__main__':

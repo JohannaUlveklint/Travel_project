@@ -5,20 +5,18 @@ class Travel:
     def __init__(self):
         self.distance = 0
         self.walking_time = 0
-        self.speed = None
+        self.speed = 1
         self.changing_time = 0
         self.search_parking_time = 0
 
-    def travel_questions(self):
-        # The function does not have to return a value since it´s stored in self.distance and self.walking_time
-        to_vehicle = None
-        to_end_destination = None
-
+    @staticmethod
+    def __get_user_input(question):
+        distance = 0
         while True:
-            color_print('green', 'How long is the distance you want to travel? Please answer in km. ')
+            color_print('green', question)
             try:
-                self.distance = float(input())
-                if self.distance <= 0:
+                distance = float(input())
+                if distance <= 0:
                     color_print('green', 'You have to enter a value greater than 0. Please try again.')
                     continue
                 else:
@@ -26,32 +24,17 @@ class Travel:
             except ValueError:
                 print("Please enter a number.")
                 continue
+        return distance
 
-        while True:
-            color_print('green', 'How many minutes walk is it to your car or bike? ')
-            try:
-                to_vehicle = float(input())
-                if to_vehicle < 0:
-                    color_print('green', 'You can not enter a value less than 0. Please try again.')
-                    continue
-                else:
-                    break
-            except ValueError:
-                print("Please enter a number.")
-                continue
+    def travel_questions(self):
+        # The function does not have to return a value since it´s stored in self.distance and self.walking_time
+        to_vehicle = None
+        to_end_destination = None
 
-        while True:
-            color_print('green', 'How many minutes walk is it from where you parked to your end destination? ')
-            try:
-                to_end_destination = float(input())
-                if to_end_destination < 0:
-                    color_print('green', 'You can not enter a value less than 0. Please try again.')
-                    continue
-                else:
-                    break
-            except ValueError:
-                print("Please enter a number.")
-                continue
+        self.distance = self.__get_user_input('How long is the distance you want to travel? Please answer in km. ')
+        to_vehicle = self.__get_user_input('How many minutes walk is it to your car or bike? ')
+        to_end_destination = self.__get_user_input('How many minutes walk is it from where you parked to your '
+                                                   'end destination? ')
 
         self.walking_time = to_vehicle + to_end_destination
         print(self.distance, self.walking_time)
@@ -68,26 +51,20 @@ class Travel:
         color_print('magenta', f'If you go this distance by car the total estimated travel time is {time} minutes.')
         return time  # Do I need to return time? Will I use that variable in future statistics?
 
-    def rush_hour_lite(self):
-        rush_hour = input('Are you going to drive within rush hours? y/n ')
-        while rush_hour != 'y' and rush_hour != 'n':
-            if rush_hour.lower() == 'y':
-                self.speed = 40
-
     def rush_hour(self):
         rush_hour = input('Are you going to drive within rush hours? y/n ')
-        while rush_hour != 'y' and rush_hour != 'n':
-            if rush_hour.lower() == 'y':
-                self.speed = 40
-                print(self.speed)
-                self.search_parking_time = 10
-            elif rush_hour.lower() == 'n':
-                self.speed = 50
-                print(self.speed)
-                self.search_parking_time = 5
-                print(self.search_parking_time)
-            else:
-                rush_hour = input('Are you going to drive within rush hours? Please type [y] for yes or [n] for no: ')
+        while rush_hour.lower() not in 'yn':  # Searches through the string to find a variable match
+            rush_hour = input('Are you going to drive within rush hours? Please type [y] for yes or [n] for no: ')
+
+        if rush_hour.lower() == 'y':
+            self.speed = 40
+            print(self.speed)
+            self.search_parking_time = 10
+        else:
+            self.speed = 50
+            print(self.speed)
+            self.search_parking_time = 5
+            print(self.search_parking_time)
 
     def time_by_bike(self):
         color_print('green', '\nNow we are going to calculate the travel time if you go by bike.')

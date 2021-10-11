@@ -1,6 +1,6 @@
-def main():
+from terminal_color import color_print
+
+
+class Presentation:
     pass
 
-
-if __name__ == '__main__':
-    main()
