@@ -19,17 +19,38 @@ which means you can access the week explicitly using a named attribute:
 """
 from terminal_color import color_print
 
+
 class Trips:
-    logged_trips = [{'year': None, 'month': None, 'day': None, 'week': None, 'distance': None}]
+    logged_trips = []
+
+    @staticmethod  # Can i call on this function from travel?
+
+    def __get_user_input(question):
+        user_input = 0
+        while True:
+            color_print('green', question)
+            try:
+                user_input = float(input())
+                if user_input <= 0:
+                    color_print('green', 'You have to enter a value greater than 0. Please try again.')
+                    continue
+                else:
+                    break
+            except ValueError:
+                print("Please enter a number.")
+                continue
+        return user_input
 
     def log_trip(self):
-        year = input(color_print('green', 'Enter year: '))
-        month = input(color_print('green', 'Enter month: '))
-        day = input(color_print('green', 'Enter day: '))
-        week = self.check_week_number(year, month, day)
-        distance = input(color_print('green', 'Enter distance: '))
+        _year = input(color_print('green', 'Enter year: '))
+        _month = input(color_print('green', 'Enter month: '))
+        _day = input(color_print('green', 'Enter day: '))
+        _week = self.check_week_number(_year, _month, _day)
+        _distance = input(color_print('green', 'Enter distance: '))
         # Check that correct input is made as in travel_questions
-        trip = self.logged_trips()
+        trip = {'year': _year, 'month': _month, 'day': _day, 'week': _week, 'distance': _distance}
+        self.logged_trips.append(trip)  # Does this work?
+        # https://stackoverflow.com/questions/52630059/python-add-dictionaries-to-list
 
     @staticmethod
     def check_week_number(year, month, day):

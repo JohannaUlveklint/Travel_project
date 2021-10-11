@@ -1,4 +1,5 @@
 from terminal_color import color_print
+from trips import Trips
 
 
 class Travel:
@@ -11,12 +12,12 @@ class Travel:
 
     @staticmethod
     def __get_user_input(question):
-        distance = 0
+        user_input = 0
         while True:
             color_print('green', question)
             try:
-                distance = float(input())
-                if distance <= 0:
+                user_input = float(input())
+                if user_input <= 0:
                     color_print('green', 'You have to enter a value greater than 0. Please try again.')
                     continue
                 else:
@@ -24,7 +25,7 @@ class Travel:
             except ValueError:
                 print("Please enter a number.")
                 continue
-        return distance
+        return user_input
 
     def travel_questions(self):
         # The function does not have to return a value since it´s stored in self.distance and self.walking_time
