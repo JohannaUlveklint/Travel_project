@@ -1,4 +1,4 @@
-Rush hour parameter for travel_by_car.
+
 
 Plan Trips. Add trips in dict keyed by date and time, distance, elapsed time.
 

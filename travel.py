@@ -11,7 +11,7 @@ class Travel:
         self.search_parking_time = 0
 
     @staticmethod
-    def __get_user_input(question):
+    def __get_user_input_float(question):
         user_input = 0
         while True:
             color_print('green', question)
@@ -32,10 +32,10 @@ class Travel:
         to_vehicle = None
         to_end_destination = None
 
-        self.distance = self.__get_user_input('How long is the distance you want to travel? Please answer in km. ')
-        to_vehicle = self.__get_user_input('How many minutes walk is it to your car or bike? ')
-        to_end_destination = self.__get_user_input('How many minutes walk is it from where you parked to your '
-                                                   'end destination? ')
+        self.distance = self.__get_user_input_float('How long is the distance you want to travel? Please answer in km.')
+        to_vehicle = self.__get_user_input_float('How many minutes walk is it to your car or bike? ')
+        to_end_destination = self.__get_user_input_float('How many minutes walk is it from where you parked to your '
+                                                   'end destination?')
 
         self.walking_time = to_vehicle + to_end_destination
         print(self.distance, self.walking_time)
