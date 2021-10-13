@@ -9,9 +9,7 @@ def main():
     # user.travel.travel_questions()  # Function is in right class
     # user.travel.time_by_car()  # The data is stored in the traveller obj and don´t have to be passed
     # user.travel.time_by_bike()
-    user.trips.log_trip()
-    for trip in user.trips.logged_trips:
-        print(trip)
+    user.presentation.run()
 
 
 if __name__ == '__main__':
