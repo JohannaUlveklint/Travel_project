@@ -1,6 +1,0 @@
-
-
-Plan Trips. Add trips in dict keyed by date and time, distance, elapsed time.
-
-List for trips arranged by (month or) week, import time? From that list make a track record.  
-

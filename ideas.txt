@@ -3,6 +3,7 @@ WHAT´S __INIT__ FOR ME?
 PRACTICALITIES:
 * UML
 * gitignore?
+* Make a user
 
 
 PARAMETERS
@@ -34,7 +35,8 @@ GAMIFICATION
 * Achieve the 150 minutes of physical activity
 * Track records on certain distances (Strava)
 * Log distances and time
-* "Since you did this trip by bike you have saved x.xx co2 equivalents!"
+* "Since you did this trip by bike you have saved x.xx co2 equivalents! If you are really into apples it is equal to
+  consume x kg of apples!"
 
 LINKS
 # Average spped cycling
