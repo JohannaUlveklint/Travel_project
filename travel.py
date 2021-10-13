@@ -2,12 +2,15 @@ from terminal_color import color_print
 
 
 class Travel:
-    def __init__(self):
+    def __init__(self):  # Do I need all these variables in __init__?
         self.distance = 0
         self.walking_time = 0
         self.speed = 1
         self.changing_time = 0
         self.search_parking_time = 0
+        self.time_car = 0
+        self.time_bike = 0
+        self.cut_emissions = 0
 
     @staticmethod
     def __get_user_input_float(question):
@@ -47,9 +50,10 @@ class Travel:
                               f'{self.speed} km/h.')
         color_print('yellow', f'{self.search_parking_time} minutes for looking for a parking lot will be added '
                               f'to the total time.')
-        time = (self.distance / self.speed) * 60 + self.walking_time + self.search_parking_time
-        color_print('magenta', f'If you go this distance by car the total estimated travel time is {time} minutes.')
-        return time  # Do I need to return time? Will I use that variable in future statistics?
+        self.time_car = (self.distance / self.speed) * 60 + self.walking_time + self.search_parking_time
+        color_print('magenta', f'If you go this distance by car the total estimated travel time is {self.time_car} '
+                               f'minutes.')
+        return self.time_car  # Do I need to return time? Will I use that variable in future statistics?
 
     def rush_hour(self):
         rush_hour = input('Are you going to drive within rush hours? y/n ')
@@ -71,9 +75,10 @@ class Travel:
         color_print('green', 'But before we can do that we have a question for you:')
         self.cycling_style()
 
-        time = (self.distance / self.speed) * 60 + self.walking_time + self.changing_time
-        color_print('magenta', f'If you go this distance by bike the total estimated travel time is {time} minutes.')
-        return time  # Do I need to return time?
+        self.time_bike = (self.distance / self.speed) * 60 + self.walking_time + self.changing_time
+        color_print('magenta', f'If you go this distance by bike the total estimated travel time is {self.time_bike} '
+                               f'minutes.')
+        return self.time_bike  # Do I need to return time?
 
     def cycling_style(self):
         cycling_style = None
@@ -93,3 +98,20 @@ class Travel:
 
         color_print('yellow', f'The expected average speed including stopping '
                               f'for traffic lights will be {self.speed} km/h.')
+
+    def compare_bike_and_car(self):
+        self.time_by_car()
+        self.time_by_bike()
+        self.cut_emissions = self.distance * 0.124
+        comparison = self.time_bike - self.time_car  # Not sure this will work, maybe it is 0 - 0 ...
+        color_print('magenta', f'The trip is estimated to take {comparison} minutes more by bike.')
+
+        color_print('yellow', f'If you go by bike you will cut your CO2 emission by {self.cut_emissions} kg on '
+                              f'this trip only (if your car uses fossil fuels)!')
+        # Add sleep and line feed at convenient places for better readability
+        color_print('yellow', 'In addition you will also approve your health.')
+        color_print('yellow', 'WHO recommends 150 minutes of active training/week, that is 30 minutes five days a '
+                              'week.')
+        color_print('yellow', f'If you see the trip as one of your physical activities going by bike added your '
+                              f'spare time with {self.time_bike} minutes!')
+
