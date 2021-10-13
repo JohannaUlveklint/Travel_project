@@ -1,5 +1,4 @@
 from terminal_color import color_print
-from trips import Trips
 
 
 class Travel:

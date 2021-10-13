@@ -22,6 +22,8 @@ PARAMETERS
 
 UI
 * Choose between different cities with different topography
+* Match case for calc trip, log trip or search x
+* Print function for logged_trips
 
 GAMIFICATION
 * How number of cycling days impacts the life span expectancy
@@ -32,6 +34,7 @@ GAMIFICATION
 * Achieve the 150 minutes of physical activity
 * Track records on certain distances (Strava)
 * Log distances and time
+* "Since you did this trip by bike you have saved x.xx co2 equivalents!"
 
 LINKS
 # Average spped cycling
