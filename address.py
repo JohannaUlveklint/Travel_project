@@ -1,5 +1,6 @@
 from geopy.geocoders import Nominatim
 from terminal_color import color_print
+import urllib.request
 
 """
 https://www.bingmapsportal.com/Application
@@ -32,8 +33,21 @@ class Address:
 def main():
     address = Address()
     address.get_lat_and_long()
+
     bing_maps_key = 'Ao811tzo3TGlB7SiQPhGQwVg31dHk6pTH5BeSAT8swbIWbbY20aHqpkYrJf2Tsg5'
-    driving_url = "http://dev.virtualearth.net/REST/v1/Routes?wayPoint.1={wayPoint1}&viaWaypoint.2={viaWaypoint2}&waypoint.3={waypoint3}&wayPoint.n={waypointN}&heading={heading}&optimize={optimize}&avoid={avoid}&distanceBeforeFirstTurn={distanceBeforeFirstTurn}&routeAttributes={routeAttributes}&timeType={timeType}&dateTime={dateTime}&maxSolutions={maxSolutions}&tolerances={tolerances}&distanceUnit={distanceUnit}&key=" + bing_maps_key
+    car_url = "http://dev.virtualearth.net/REST/v1/Routes?wayPoint.1={" + address.from_lat, address.from_long + \
+                  "}&wayPoint.n={" + address.to_lat, address.to_long + "}&key=" + bing_maps_key + "}"
+    bike_url = "http://dev.virtualearth.net/REST/v1/Routes/{Walking}?wayPoint.1={" + address.from_lat, \
+                  address.from_long + "}&wayPoint.n={" + address.to_lat, address.to_long + "}&key={" \
+                  + bing_maps_key + "}"
+
+    car_request = urllib.request.Request(car_url)
+    car_response = urllib.request.urlopen(car_request)
+    print(car_response.read())
+
+    bike_request = urllib.request.Request(bike_url)
+    bike_response = urllib.request.urlopen(bike_request)
+    print(bike_response.read())
 
 
 if __name__ == '__main__':
