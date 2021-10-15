@@ -21,25 +21,30 @@ class Address:
         # address = input(color_print('green', 'Enter <street> <street number> <city>'))
         # I return two variables but it prints 'None' here, why?
         from_location = geolocator.geocode(from_address)
-        self.from_lat = from_location.latitude
+        self.from_lat = str(from_location.latitude)
+        self.from_long = str(from_location.longitude)
 
         to_address = input('Enter <street> <street number> <city> of your end destination: ')
         to_location = geolocator.geocode(to_address)
-        self.to_lat = to_location.latitude
-        self.to_long = to_location.longitude
+        self.to_lat = str(to_location.latitude)
+        self.to_long = str(to_location.longitude)
         return self.from_lat, self.from_long, self.to_lat, self.to_long
 
 
 def main():
     address = Address()
     address.get_lat_and_long()
+    # print(address.from_lat)
+    # print(address.from_long)
+    # print(address.to_lat)
+    # print(address.to_long)
 
     bing_maps_key = 'Ao811tzo3TGlB7SiQPhGQwVg31dHk6pTH5BeSAT8swbIWbbY20aHqpkYrJf2Tsg5'
-    car_url = "http://dev.virtualearth.net/REST/v1/Routes?wayPoint.1={" + address.from_lat, address.from_long + \
-                  "}&wayPoint.n={" + address.to_lat, address.to_long + "}&key=" + bing_maps_key + "}"
-    bike_url = "http://dev.virtualearth.net/REST/v1/Routes/{Walking}?wayPoint.1={" + address.from_lat, \
-                  address.from_long + "}&wayPoint.n={" + address.to_lat, address.to_long + "}&key={" \
-                  + bing_maps_key + "}"
+    car_url = "http://dev.virtualearth.net/REST/v1/Routes?wayPoint.1=" + address.from_lat + "," + address.from_long + \
+                  "&wayPoint.2=" + address.to_lat + "," + address.to_long + "&key=" + bing_maps_key
+    bike_url = "http://dev.virtualearth.net/REST/v1/Routes/Walking?wayPoint.1=" + address.from_lat + "," + \
+                  address.from_long + "&wayPoint.2=" + address.to_lat + "," + address.to_long + "&key=" \
+                  + bing_maps_key
 
     car_request = urllib.request.Request(car_url)
     car_response = urllib.request.urlopen(car_request)
