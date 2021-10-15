@@ -1,6 +1,7 @@
 from geopy.geocoders import Nominatim
 from terminal_color import color_print
 import urllib.request
+import json
 
 """
 https://www.bingmapsportal.com/Application
@@ -53,6 +54,14 @@ def main():
     bike_request = urllib.request.Request(bike_url)
     bike_response = urllib.request.urlopen(bike_request)
     print(bike_response.read())
+
+    r = car_response.read().decode(encoding="utf-8")
+    result = json.loads(r)
+
+    itinerary_items = result["resourceSets"][0]["resources"][0]["routeLegs"][0]["itineraryItems"]
+
+    for item in itinerary_items:
+        print(item["instruction"]["text"])
 
 
 if __name__ == '__main__':
