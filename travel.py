@@ -80,6 +80,25 @@ class Travel:
                                f'minutes.')
         return self.time_bike  # Do I need to return time?
 
+    def cycling_style_old(self):
+        cycling_style = None
+        while cycling_style != 'moderate' and cycling_style != 'fast':
+            cycling_style = input('Do you consider yourself a [m]oderate or [f]ast cyclist? ')
+            if cycling_style == 'm':
+                cycling_style = 'moderate'
+                self.speed = 15
+                self.changing_time = 0
+            elif cycling_style == 'f':
+                cycling_style = 'fast'
+                self.speed = 20
+                self.changing_time = 5
+                color_print('yellow', 'Five minutes for change from training clothes will be included.')
+            else:
+                color_print('green', 'Please choose "m" for moderate tempo cyclist or "f" for fast cyclist.')
+
+        color_print('yellow', f'The expected average speed including stopping '
+                              f'for traffic lights will be {self.speed} km/h.')
+
     def cycling_style(self):
         cycling_style = None
         while cycling_style != 'moderate' and cycling_style != 'fast':

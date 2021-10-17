@@ -1,3 +1,4 @@
+import requests
 from geopy.geocoders import Nominatim
 from terminal_color import color_print
 import urllib.request
@@ -36,57 +37,65 @@ class Address:
         self.to_long = str(to_location.longitude)
         return self.from_lat, self.from_long, self.to_lat, self.to_long
 
-    def seconds(self, response):
-        seconds = 0
-        for i in response:
-            if i == 'duration':
-                seconds += i
-        return seconds
+    # def seconds(self, response):
+    #     seconds = 0
+    #     for i in response:
+    #         if i == 'duration':
+    #             seconds += i
+    #     return seconds
 
-    def sec_to_hh_mm_ss(self, time_in_sec):
+    def get_url(self, from_long=None, from_lat=None, to_long=None, to_lat=None):
+        api_key = "5b3ce3597851110001cf6248d62eca3e4d314dba96c2e5596a0f8074"
+        search = str('api_key=' + api_key + '&start=' + from_long + ',' + from_lat + '&end=' + \
+                 to_long + ',' + to_lat)
+        car_url = requests.get(f"https://api.openrouteservice.org/v2/directions/driving-car?" + search).json()
+        reg_bike_url = requests.get(f"https://api.openrouteservice.org/v2/directions/cycling-regular?" + search).json()
+        elect_bike_url = requests.get(f"https://api.openrouteservice.org/v2/directions/cycling-electric?" + search).json()
+        return car_url, reg_bike_url, elect_bike_url
+
+    def get_distance_and_duration(self, car_url=None, reg_bike_url=None, elect_bike_url=None):
+        self.get_lat_and_long()
+        self.get_url()
+        car_distance = car_url['features'][0]['properties']['segments'][0]['distance']
+        reg_bike_distance = reg_bike_url['features'][0]['properties']['segments'][0]['distance']
+        elect_bike_distance = elect_bike_url['features'][0]['properties']['segments'][0]['distance']
+
+        car_duration = car_url['features'][0]['properties']['segments'][0]['duration']
+        reg_bike_duration = reg_bike_url['features'][0]['properties']['segments'][0]['duration']
+        elect_bike_duration = elect_bike_url['features'][0]['properties']['segments'][0]['duration']
+
+        return car_distance, reg_bike_distance, elect_bike_distance, car_duration, reg_bike_duration, elect_bike_duration
+
+    @staticmethod
+    def sec_to_hh_mm_ss(time_in_sec):
         hh_mm_ss = (datetime.timedelta(seconds=time_in_sec))
         return hh_mm_ss
 
 
 def main():
     address = Address()
-    address.get_lat_and_long()
+    address.get_distance_and_duration()
+    print(address.car_distance, address.reg_bike_distance, address.elect_bike_distance, address.car_duration,
+          address.reg_bike_duration, address.elect_bike_duration)
 
+    # api_key = "5b3ce3597851110001cf6248d62eca3e4d314dba96c2e5596a0f8074"
+    # search = 'api_key=' + api_key + '&start=' + address.from_long + ',' + address.from_lat + '&end=' + \
+    #          address.to_long + ',' + address.to_lat
     #
-    # bike_request = urllib.request.Request(bike_url)
-    # bike_response = urllib.request.urlopen(bike_request)
-    # print(bike_response.read())
+    # url = requests.get(f"https://api.openrouteservice.org/v2/directions/" + vehicle + "?" + search).json()
+    # distance = url['features'][0]['properties']['segments'][0]['distance']
+    # duration = url['features'][0]['properties']['segments'][0]['duration']
+    # print(distance)
+    # print(duration)
     #
-    # r = car_response.read().decode(encoding="utf-8")
-    # result = json.loads(r)
+    # car_url = "https://api.openrouteservice.org/v2/directions/driving-car?api_key=" + api_key + "&start=" + \
+    #           address.from_long + "," + address.from_lat + "&end=" + address.to_long + "," + address.to_lat + ""
+    # bike_regular_url = "https://api.openrouteservice.org/v2/directions/cycling-regular?api_key=" + api_key + "&start=" +\
+    #                    address.from_long + "," + address.from_lat + "&end=" + address.to_long + "," + address.to_lat + ""
+    # bike_electric_url = "https://api.openrouteservice.org/v2/directions/cycling-electric?api_key=" + api_key + \
+    #                     "&start=" + address.from_long + "," + address.from_lat + "&end=" + address.to_long + "," + address.to_lat + ""
     #
-    # itinerary_items = result["resourceSets"][0]["resources"][0]["routeLegs"][0]["itineraryItems"]
     #
-    # for item in itinerary_items:
-    #     print(item["instruction"]["text"])
-
-    api_key = "5b3ce3597851110001cf6248d62eca3e4d314dba96c2e5596a0f8074"
-    car_url = "https://api.openrouteservice.org/v2/directions/driving-car?api_key=" + api_key + "&start=" + \
-              address.from_long + "," + address.from_lat + "&end=" + address.to_long + "," + address.to_lat + ""
-    bike_regular_url = "https://api.openrouteservice.org/v2/directions/cycling-regular?api_key=" + api_key + "&start=" +\
-                       address.from_long + "," + address.from_lat + "&end=" + address.to_long + "," + address.to_lat + ""
-    bike_electric_url = "https://api.openrouteservice.org/v2/directions/cycling-electric?api_key=" + api_key + \
-                        "&start=" + address.from_long + "," + address.from_lat + "&end=" + address.to_long + "," + address.to_lat + ""
-
-    car_request = urllib.request.Request(car_url)
-    car_response = urllib.request.urlopen(car_request)
-    decoded = car_response.read().decode(encoding="utf-8")  # What´s the difference between decoded and result?
-    result = json.loads(decoded)
-    print(result)
-    print(decoded)
-
-    # ['features']['properties']['segments']['duration'] is not [1][2][0][1]: string index out of range
-    time_in_sec = decoded['features']['properties']['segments']['duration']
-    print(time_in_sec)
-
-
-
-
 
 if __name__ == '__main__':
     main()
