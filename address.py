@@ -80,6 +80,7 @@ class Address:
 def main():
     address = Address()
     cd, rbd, ebd, cdu, rbdu, ebdu = address.get_distance_and_duration()
+    color_print('yellow', 'These are the distances and durations for the trip with ')
     print('Car:')
     print('====')
     print(f'Car distance {cd}\nCar duration {cdu}')
