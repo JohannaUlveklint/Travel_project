@@ -104,16 +104,5 @@ def main():
     address.print_distance_and_duration()
 
 
-    # api_key = "5b3ce3597851110001cf6248d62eca3e4d314dba96c2e5596a0f8074"
-    # search = f'api_key=' + api_key + '&start=' + address.from_long + ',' + address.from_lat + '&end=' + \
-    #          address.to_long + ',' + address.to_lat
-    #
-    # url = requests.get(f"https://api.openrouteservice.org/v2/directions/driving-car?" + search).json()
-    # distance = url['features'][0]['properties']['segments'][0]['distance']
-    # duration = url['features'][0]['properties']['segments'][0]['duration']
-    # print(distance)
-    # print(duration)
-
-
 if __name__ == '__main__':
     main()
