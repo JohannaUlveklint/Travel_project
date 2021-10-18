@@ -100,7 +100,9 @@ class Address:
 
 
 def main():
-    pass
+    address = Address()
+    address.get_distance_and_duration()
+
 
 if __name__ == '__main__':
     main()
