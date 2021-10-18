@@ -36,7 +36,7 @@ class Address:
         self.from_long = str(from_location.longitude)
 
         # to_address = input('Enter <street> <street number> <city> of your end destination: ')
-        to_address = 'Hästhovsgatan 8 Göteborg'
+        to_address = 'Anders Personsgatan 14 Göteborg'
         to_location = geolocator.geocode(to_address)
         self.to_lat = str(to_location.latitude)
         self.to_long = str(to_location.longitude)
@@ -78,17 +78,25 @@ class Address:
         cd, rbd, ebd, cdu, rbdu, ebdu = self.get_distance_and_duration()
         print('Car:')
         print('====')
-        print(f'Car distance {self.m_to_km(cd)} km.\nCar duration {self.sec_to_hh_mm_ss(cdu)}.')
+        print(f'Car distance {self.m_to_km(cd)} km.\nCar duration {self.sec_converter(cdu)}.')
         print('Electric Bike:')
         print('==============')
-        print(f'Electric bike distance {self.m_to_km(ebd)} km.\nElectric bike duration {self.sec_to_hh_mm_ss(ebdu)}')
+        print(f'Electric bike distance {self.m_to_km(ebd)} km.\nElectric bike duration {self.sec_converter(ebdu)}')
         print('Regular Bike:')
         print('=============')
-        print(f'Regular bike distance {self.m_to_km(rbd)} km.\nRegular bike duration {self.sec_to_hh_mm_ss(rbdu)}')
-
+        print(f'Regular bike distance {self.m_to_km(rbd)} km.\nRegular bike duration {self.sec_converter(rbdu)}')
+        print('==============')
+        print(f'If you take the bike the trip will take {self.sec_converter(rbdu) - self.sec_converter(cdu)} '
+              f'minutes more. Or {self.sec_converter(ebdu) - self.sec_converter(cdu)} minutes if you are electric. :)')
+        print('Furthermore, extra time for rush hour traffic and finding a parking lot should be accounted for when '
+              'going by car.')
+        print('Cycling strengthens your body and increases spare time since you workout and travel at the same time.')
+        print(f'You also will have cut your CO2 emission with {round((cd * 0.124), 2)} grams one way! That is '
+              f'{round((cd * 0.124 * 43 / 1000), 2)} kg if you are commuting a whole month.')
+        print('So Whats __init__ For You? A stronger body, more spare time and less polluting. The choice is yours.')
 
     @staticmethod
-    def sec_to_hh_mm_ss(time_in_sec):
+    def sec_converter(time_in_sec):
         time = datetime.timedelta(seconds=time_in_sec)
         time_without_ms = time - datetime.timedelta(microseconds=time.microseconds)
         return time_without_ms
@@ -101,7 +109,7 @@ class Address:
 
 def main():
     address = Address()
-    address.get_distance_and_duration()
+    address.print_distance_and_duration()
 
 
 if __name__ == '__main__':
