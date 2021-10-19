@@ -1,17 +1,6 @@
 WHAT´S __INIT__ FOR ME?
 
 UP NEXT:
-* Check for rush hour parameters at openrouteservice.org, if not: how can I compensate for it? 50 km/h in densely
-  built-up areas and 70 km/h in non-densely built-up areas in Gothenburg.
-* https://www.london.gov.uk/questions/2019/19767
-  Long term general traffic speeds in London are measured for central, inner and outer London using GPS-based data for
-  key roads. Weekday (07:00 to 19:00) speeds from 2008 to 2018 have changed from:
-
-  8.7 mph to 7.1 mph in central London 7.1 mph = 11.4 km/h
-  12.5 mph to 11.6 mph in inner London 11.6 mph = 18.6 km/h
-  20.3 mph to 19.3 mph in outer London 19.3 mph = 31.1 km/h
-* Add time for looking for parking and change of clothes to total time.
-* Make a function that compares the duration for the different vehicles.
 * Update run().
 * Check what functions to delete.
 * Make an example user with logged trips.
@@ -59,7 +48,7 @@ GAMIFICATION
   consume x kg of apples!"
 
 LINKS
-# Average spped cycling
+# Average speed cycling
 https://cyclinguphill.com/average-speeds-cycling/
 # Average traffic speed in London
 https://www.london.gov.uk/questions/2019/19767
@@ -71,3 +60,4 @@ https://www.trafikverket.se/tjanster/trafiktjanster/Vagtrafik--och-hastighetsdat
 IN THE FUTURE
 * Use coordinates/Google Maps/What3Words API to calculate distance
 * Make a web solution
+
