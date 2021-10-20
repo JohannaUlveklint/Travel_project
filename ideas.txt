@@ -7,7 +7,7 @@ UP NEXT:
 * Start with the diagrams.
 * Can I use a map?
 * Can the user choose between addresses when typing?
-* Make unittests.
+* Make unittests, one that mocks the http
 
 PRACTICALITIES:
 * UML
