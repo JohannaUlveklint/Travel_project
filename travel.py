@@ -1,16 +1,100 @@
+import datetime
+import requests
+from decimal import Decimal
+from geopy.geocoders import Nominatim
 from terminal_color import color_print
 
 
 class Travel:
-    def __init__(self):  # Do I need all these variables in __init__?
-        self.distance = 0
-        self.walking_time = 0
-        self.speed = 1
-        self.changing_time = 0
-        self.search_parking_time = 0
-        self.time_car = 0
-        self.time_bike = 0
-        self.cut_emissions = 0
+    def __init__(self, from_latitude=None, from_longitude=None, to_latitude=None, to_longitude=None):
+        self.from_lat = from_latitude
+        self.from_long = from_longitude
+        self.to_lat = to_latitude
+        self.to_long = to_longitude
+
+    def get_lat_and_long(self):
+        geolocator = Nominatim(user_agent="my_application", timeout=15)
+        # from_address = input('Enter <street> <street number> <city> of your start destination: ')
+        from_address = 'Övre Hallegatan 50 Göteborg'
+        # address = input(color_print('green', 'Enter <street> <street number> <city>'))
+        # I return two variables but it prints 'None' here, why?
+        from_location = geolocator.geocode(from_address)
+        self.from_lat = str(from_location.latitude)
+        self.from_long = str(from_location.longitude)
+
+        # to_address = input('Enter <street> <street number> <city> of your end destination: ')
+        to_address = 'Anders Personsgatan 14 Göteborg'
+        to_location = geolocator.geocode(to_address)
+        self.to_lat = str(to_location.latitude)
+        self.to_long = str(to_location.longitude)
+        return self.from_lat, self.from_long, self.to_lat, self.to_long
+
+    def get_url(self):
+        api_key = "5b3ce3597851110001cf6248d62eca3e4d314dba96c2e5596a0f8074"
+
+        if not all([self.from_long, self.from_lat, self.to_long, self.to_lat]):  # If any is missing values (=None)
+            print("Missing geo-coordinates")
+            return None, None, None
+        search = f'api_key={api_key}&start={self.from_long},{self.from_lat}&end={self.to_long},{self.to_lat}'
+
+        base_url = 'https://api.openrouteservice.org/v2/directions/'
+        vehicles = ['driving-car', 'cycling-regular', 'cycling-electric']
+
+        # car_url, reg_bike_url, elect_bike_url = [requests.get(f"{base_url}{v}?" + search).json() for v in vehicles]
+        # Instead of adding values to the three variables as above we can directly return the comprehension and in
+        # get_distance_and_duration() the output will be set to the variables in car_url, reg_bike_url, elect_bike_url
+        # = self.get_url()
+
+        return [requests.get(f"{base_url}{v}?" + search).json() for v in vehicles]
+
+    def get_distance_and_duration(self):
+        self.get_lat_and_long()
+        car_url, reg_bike_url, elect_bike_url = self.get_url()
+        # Make as loop?
+        car_distance = car_url['features'][0]['properties']['segments'][0]['distance']
+        reg_bike_distance = reg_bike_url['features'][0]['properties']['segments'][0]['distance']
+        elect_bike_distance = elect_bike_url['features'][0]['properties']['segments'][0]['distance']
+
+        car_duration = car_url['features'][0]['properties']['segments'][0]['duration']
+        reg_bike_duration = reg_bike_url['features'][0]['properties']['segments'][0]['duration']
+        elect_bike_duration = elect_bike_url['features'][0]['properties']['segments'][0]['duration']
+        return car_distance, reg_bike_distance, elect_bike_distance, car_duration, reg_bike_duration, \
+               elect_bike_duration
+
+    def print_distance_and_duration(self):
+        cd, rbd, ebd, cdu, rbdu, ebdu = self.get_distance_and_duration()
+        print('Car:')
+        print('====')
+        print(f'Car distance {self.m_to_km(cd)} km.\nCar duration {self.sec_converter(cdu)}.')
+        print('Electric Bike:')
+        print('==============')
+        print(f'Electric bike distance {self.m_to_km(ebd)} km.\nElectric bike duration {self.sec_converter(ebdu)}')
+        print('Regular Bike:')
+        print('=============')
+        print(f'Regular bike distance {self.m_to_km(rbd)} km.\nRegular bike duration {self.sec_converter(rbdu)}')
+        print('==============')
+        print(f'If you go this trip by bike it will actually only take '
+              f'{self.sec_converter(rbdu) - self.sec_converter(cdu)} minutes more. Or '
+              f'{self.sec_converter(ebdu) - self.sec_converter(cdu)} minutes if you are electric. :)')
+        print('Furthermore, extra time for rush hour traffic and finding a parking lot should be accounted for when '
+              'calculating total travel time by car.')
+        print('Cycling strengthens your body and increases spare time since you workout and travel at the same time.')
+        print(f'You also will have cut your CO2 emission with {round((cd * 0.124), 2)} grams one way! That is '
+              f'{round((cd * 0.124 * 43 / 1000), 2)} kg if you are commuting a whole month.')
+        print('So Whats __init__ For You? A stronger body, more spare time and less polluting. The choice is yours.')
+
+        return cd, rbd, ebd, cdu, rbdu, ebdu  # Return emissions?
+
+    @staticmethod
+    def sec_converter(time_in_sec):
+        time = datetime.timedelta(seconds=time_in_sec)
+        time_without_ms = time - datetime.timedelta(microseconds=time.microseconds)
+        return time_without_ms
+
+    @staticmethod
+    def m_to_km(meter):
+        km = Decimal(meter / 1000).quantize(Decimal("1.000"))
+        return km
 
     @staticmethod
     def __get_user_input_float(question):
@@ -29,108 +113,7 @@ class Travel:
                 continue
         return user_input
 
-    def travel_questions(self):
-        # The function does not have to return a value since it´s stored in self.distance and self.walking_time
-        to_vehicle = None
-        to_end_destination = None
 
-        self.distance = self.__get_user_input_float('How long is the distance you want to travel? Please answer in km.')
-        to_vehicle = self.__get_user_input_float('How many minutes walk is it to your car or bike? ')
-        to_end_destination = self.__get_user_input_float('How many minutes walk is it from where you parked to your '
-                                                   'end destination?')
 
-        self.walking_time = to_vehicle + to_end_destination
-        print(self.distance, self.walking_time)
 
-    def time_by_car(self):  # Why does it not store the self.speed values and other similar values?
-        color_print('green', '\nWe start by calculating the travel time if you go by car.')
-        self.rush_hour()
-
-        color_print('yellow', f'The expected average speed including stopping for traffic lights will be '
-                              f'{self.speed} km/h.')
-        color_print('yellow', f'{self.search_parking_time} minutes for looking for a parking lot will be added '
-                              f'to the total time.')
-        self.time_car = (self.distance / self.speed) * 60 + self.walking_time + self.search_parking_time
-        color_print('magenta', f'If you go this distance by car the total estimated travel time is {self.time_car} '
-                               f'minutes.')
-        return self.time_car  # Do I need to return time? Will I use that variable in future statistics?
-
-    def rush_hour(self):
-        rush_hour = input('Are you going to drive within rush hours? y/n ')
-        while rush_hour.lower() not in 'yn':  # Searches through the string to find a variable match
-            rush_hour = input('Are you going to drive within rush hours? Please type [y] for yes or [n] for no: ')
-
-        if rush_hour.lower() == 'y':
-            self.speed = 40
-            print(self.speed)
-            self.search_parking_time = 10
-        else:
-            self.speed = 50
-            print(self.speed)
-            self.search_parking_time = 5
-            print(self.search_parking_time)
-
-    def time_by_bike(self):
-        color_print('green', '\nNow we are going to calculate the travel time if you go by bike.')
-        color_print('green', 'But before we can do that we have a question for you:')
-        self.cycling_style()
-
-        self.time_bike = (self.distance / self.speed) * 60 + self.walking_time + self.changing_time
-        color_print('magenta', f'If you go this distance by bike the total estimated travel time is {self.time_bike} '
-                               f'minutes.')
-        return self.time_bike  # Do I need to return time?
-
-    def cycling_style_old(self):
-        cycling_style = None
-        while cycling_style != 'moderate' and cycling_style != 'fast':
-            cycling_style = input('Do you consider yourself a [m]oderate or [f]ast cyclist? ')
-            if cycling_style == 'm':
-                cycling_style = 'moderate'
-                self.speed = 15
-                self.changing_time = 0
-            elif cycling_style == 'f':
-                cycling_style = 'fast'
-                self.speed = 20
-                self.changing_time = 5
-                color_print('yellow', 'Five minutes for change from training clothes will be included.')
-            else:
-                color_print('green', 'Please choose "m" for moderate tempo cyclist or "f" for fast cyclist.')
-
-        color_print('yellow', f'The expected average speed including stopping '
-                              f'for traffic lights will be {self.speed} km/h.')
-
-    def cycling_style(self):
-        cycling_style = None
-        while cycling_style != 'moderate' and cycling_style != 'fast':
-            cycling_style = input('Do you consider yourself a [m]oderate or [f]ast cyclist? ')
-            if cycling_style == 'm':
-                cycling_style = 'moderate'
-                self.speed = 15
-                self.changing_time = 0
-            elif cycling_style == 'f':
-                cycling_style = 'fast'
-                self.speed = 20
-                self.changing_time = 5
-                color_print('yellow', 'Five minutes for change from training clothes will be included.')
-            else:
-                color_print('green', 'Please choose "m" for moderate tempo cyclist or "f" for fast cyclist.')
-
-        color_print('yellow', f'The expected average speed including stopping '
-                              f'for traffic lights will be {self.speed} km/h.')
-
-    def compare_bike_and_car(self):
-        self.time_by_car()
-        self.time_by_bike()
-        self.cut_emissions = self.distance * 0.124
-        comparison = self.time_bike - self.time_car  # Not sure this will work, maybe it is 0 - 0 ...
-        color_print('magenta', f'The trip is estimated to take {comparison} minutes more by bike.')
-
-        color_print('yellow', f'If you go by bike you will cut your CO2 emission by {self.cut_emissions} kg on '
-                              f'this trip only (if your car uses fossil fuels)!')
-        # Add sleep and line feed at convenient places for better readability
-        color_print('yellow', 'In addition you will also approve your health.')
-        color_print('yellow', 'WHO recommends 150 minutes of active training/week, that is 30 minutes five days a '
-                              'week.')
-        color_print('yellow', f'If you see the trip as one of your physical activities going by bike added your '
-                              f'spare time with {self.time_bike} minutes!')
 

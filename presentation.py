@@ -21,13 +21,14 @@ class Presentation:
             color_print('green', 'Press [2] to log a bike trip.')
             color_print('green', 'Press [3] to quit.')
             user_input = input('Now make your choice: ')
+            travel = Travel()  # Is this the right way to do it?
+            trips = Trips()
             match user_input:
                 case "1":
-                    pass
-                    # Here I want to call travel_questions, compare_bike_and_car etc but I can not figure out how.
+                    travel.travel_questions()
+                    travel.compare_bike_and_car()
                 case "2":
-                    pass
-                    # And here I will call log_trip but have the same problem.
+                    trips.log_trip()
                 case "3":
                     color_print('cyan', 'Thank you for visiting us. Have a nice day and welcome back!')
                     running = False

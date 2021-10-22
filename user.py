@@ -5,7 +5,6 @@ from terminal_color import color_print
 from travel import Travel
 from trips import Trips
 from presentation import Presentation
-from address import Address
 
 
 class User:
@@ -13,7 +12,6 @@ class User:
         self.travel = Travel()
         self.trips = Trips()
         self.presentation = Presentation()
-        self.address = Address()
 
     def save_to_json(self, trips):
         file_name = input("Please choose a name to save your logged trips with: ")
