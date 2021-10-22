@@ -96,22 +96,22 @@ class Travel:
         km = Decimal(meter / 1000).quantize(Decimal("1.000"))
         return km
 
-    @staticmethod
-    def __get_user_input_float(question):
-        user_input = 0
-        while True:
-            color_print('green', question)
-            try:
-                user_input = float(input())
-                if user_input <= 0:
-                    color_print('green', 'You have to enter a value greater than 0. Please try again.')
-                    continue
-                else:
-                    break
-            except ValueError:
-                print("Please enter a number.")
-                continue
-        return user_input
+    # @staticmethod
+    # def __get_user_input_float(question):
+    #     user_input = 0
+    #     while True:
+    #         color_print('green', question)
+    #         try:
+    #             user_input = float(input())
+    #             if user_input <= 0:
+    #                 color_print('green', 'You have to enter a value greater than 0. Please try again.')
+    #                 continue
+    #             else:
+    #                 break
+    #         except ValueError:
+    #             print("Please enter a number.")
+    #             continue
+    #     return user_input
 
 
 

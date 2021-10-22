@@ -25,8 +25,7 @@ class Presentation:
             trips = Trips()
             match user_input:
                 case "1":
-                    travel.travel_questions()
-                    travel.compare_bike_and_car()
+                    travel.print_distance_and_duration()
                 case "2":
                     trips.log_trip()
                 case "3":

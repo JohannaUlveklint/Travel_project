@@ -1,22 +1,3 @@
-
-
-# Plan Trips. Add trips in dict keyed by date and time, distance, elapsed time.
-#
-# List for trips arranged by (month or) week, import time? From that list make a track record.
-"""
-datetime.date has a isocalendar() method, which returns a tuple containing the calendar week:
-
->>> import datetime
->>> datetime.date(2010, 6, 16).isocalendar()[1]
-24
-datetime.date.isocalendar() is an instance-method returning a tuple containing year, 
-weeknumber and weekday in respective order for the given date instance.
-
-In Python 3.9+ isocalendar() returns a namedtuple with the fields year, week and weekday 
-which means you can access the week explicitly using a named attribute:
->>> datetime.date(2010, 6, 16).isocalendar().week
-24
-"""
 from terminal_color import color_print
 import datetime
 from travel import Travel
@@ -43,47 +24,47 @@ class Trips:
                 continue
         return user_input
 
-    """
-    datetime.datetime(year=year,month=month,day=day,hour=hour)
-    that will eliminate somethings like months >12 , hours > 23, non-existent leapdays 
-    (month=2 has max of 28 on non leap years, 29 otherwise, other months have max of 30 or 31 days)
-    (throws ValueError exception on error)
-
-    correctDate = None
-    try:
-        newDate = datetime.datetime(2008,11,42)
-        correctDate = True
-    except ValueError:
-        correctDate = False
-    print(str(correctDate))
-    """
-
     def log_trip(self):
         running = True
-        _year = None
-        _month = None
-        _day = None
+        year = None
+        month = None
+        day = None
 
         while running:
-            _year = self.__get_user_input_int('\nEnter year with four digits: ')
-            _month = self.__get_user_input_int('Enter the number of the month with one or two digits: ')
-            _day = self.__get_user_input_int('Enter day with one or two digits: ')
+            year = self.__get_user_input_int('\nEnter year with four digits: ')
+            month = self.__get_user_input_int('Enter the number of the month with one or two digits: ')
+            day = self.__get_user_input_int('Enter day with one or two digits: ')
             try:
-                new_date = datetime.datetime(_year, _month, _day)
+                new_date = datetime.datetime(year, month, day)
                 if new_date > datetime.datetime.now():
                     print('You can not log trips made in the future.')
                     continue
                 else:
                     break
             except ValueError:
-                print(f'The date {_year}-{_month}-{_day} is invalid, please try again.')
+                print(f'The date {year}-{month}-{day} is invalid, please try again.')
                 continue
 
-        _week = datetime.date(_year, _month, _day).isocalendar().week
-        _distance = self.__get_user_input_int('Enter distance in whole km: ')  # Change this to float
+        week = datetime.date(year, month, day).isocalendar().week
+        bike_type = input(color_print('green', 'Are you riding a [r]egular or [e]lectric bike? Choose [e] if you '
+                                               'are a fast biker.'))  # Skip color_print since it prints None?
+        travel = Travel()
+        while True:
+            if bike_type.lower() == 'r':
+                distance, duration = travel.get_distance_and_duration()[1][4]
+                break
+            elif bike_type.lower() == 'e':
+                distance, duration = travel.get_distance_and_duration()[2][5]
+                break
+            else:
+                color_print('red', 'Please choose [r] for regular or [e] for electric.')
 
-        trip = {'year': _year, 'month': _month, 'day': _day, 'week': _week, 'distance': _distance}
+        trip = {'year': year, 'month': month, 'day': day, 'week': week, 'distance': distance, 'duration': duration}  # Add emissions?
+        print(trip)
         self.logged_trips.append(trip)
+
+    def print_trip(self):
+        pass
 
     def get_weekly_training_data(self):
         pass
