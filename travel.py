@@ -73,15 +73,20 @@ class Travel:
         print('=============')
         print(f'Regular bike distance {self.m_to_km(rbd)} km.\nRegular bike duration {self.sec_converter(rbdu)}')
         print('==============')
+        # ' + '\033[1m' + 'So Whats __init__ For You?' + '\033[0m' + '
         print(f'If you go this trip by bike it will actually only take '
-              f'{self.sec_converter(rbdu) - self.sec_converter(cdu)} minutes more. Or '
-              f'{self.sec_converter(ebdu) - self.sec_converter(cdu)} minutes if you are electric. :)')
+              f'' + '\033[1m' + f'{self.sec_converter(rbdu) - self.sec_converter(cdu)} minutes' + '\033[0m' + ' more. '
+              'Or ' + '\033[1m' + f'{self.sec_converter(ebdu) - self.sec_converter(cdu)} minutes ' + '\033[0m' +
+              'if you are electric. :)')
         print('Furthermore, extra time for rush hour traffic and finding a parking lot should be accounted for when '
               'calculating total travel time by car.')
-        print('Cycling strengthens your body and increases spare time since you workout and travel at the same time.')
-        print(f'You also will have cut your CO2 emission with {round((cd * 0.124), 2)} grams one way! That is '
-              f'{round((cd * 0.124 * 43 / 1000), 2)} kg if you are commuting a whole month.')
-        print('So Whats __init__ For You? A stronger body, more spare time and less polluting. The choice is yours.')
+        print('Cycling ' + '\033[1m' + f'strengthens your body' + '\033[0m' + ' and ' + '\033[1m' +
+              'increases spare time' + '\033[0m' + ' since you workout and travel at the same time.')
+        print(f'You also will have ' + '\033[1m' + f'cut your CO2 emission with {round((cd * 0.12), 2)} grams' +
+              '\033[0m' + ' one way (calculated on an average new car)! That is ' + '\033[1m' +
+              f'{round((cd * 0.12 * 43 / 1000), 2)} kg' + '\033[0m' + ' if you are commuting a whole month.')
+        print('\033[1m' + 'So Whats __init__ For You?' + '\033[0m' + ' A stronger body, more spare time and less '
+              'polluting. The choice is yours.')
 
         return cd, rbd, ebd, cdu, rbdu, ebdu  # Return emissions?
 
