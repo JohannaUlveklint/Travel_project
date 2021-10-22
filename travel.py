@@ -73,7 +73,7 @@ class Travel:
         print('=============')
         print(f'Regular bike distance {self.m_to_km(rbd)} km.\nRegular bike duration {self.sec_converter(rbdu)}')
         print('==============')
-        # ' + '\033[1m' + 'So Whats __init__ For You?' + '\033[0m' + '
+        # Change bold to colors?
         print(f'If you go this trip by bike it will actually only take '
               f'' + '\033[1m' + f'{self.sec_converter(rbdu) - self.sec_converter(cdu)} minutes' + '\033[0m' + ' more. '
               'Or ' + '\033[1m' + f'{self.sec_converter(ebdu) - self.sec_converter(cdu)} minutes ' + '\033[0m' +
