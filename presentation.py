@@ -18,9 +18,9 @@ class Presentation:
             # I will later add more alternatives to see statistics.
             color_print('green', '\nPlease choose between following alternatives:')
             color_print('green', 'Press [1] to comparing travel time.')
-            color_print('green', 'Press [2] to log a bike trip.')
-            color_print('green', 'Press [3] to save your trip.')
-            color_print('green', 'Press [4] to load saved trips.')
+            color_print('green', 'Press [2] to save a bike trip.')
+            color_print('green', 'Press [3] to ?.')
+            color_print('green', 'Press [4] to print saved trips')
             color_print('green', 'Press [5] to quit.')
             user_input = input('Now make your choice: ')
 
@@ -33,7 +33,7 @@ class Presentation:
                 case "2":
                     trips.log_trip()
                 case "3":
-                    trips.save_to_json()
+                    pass
                 case "4":
                     trips.load_from_json()
                 case "5":

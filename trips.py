@@ -66,18 +66,35 @@ class Trips:
                 color_print('red', 'Please choose [r] for regular or [e] for electric.')
 
         trip = {'year': year, 'month': month, 'day': day, 'week': week, 'distance': distance, 'duration': duration}  # Add emissions?
-        self.logged_trips.append(trip)
-        print(self.logged_trips[0])
+        # self.logged_trips.append(trip)
+        # print(self.logged_trips[0])
+        self.save_to_json(trip)
+        # return self.logged_trips
 
-    def save_to_json(self):
-        trip_to_save = self.logged_trips
+    def save_to_json(self, new_trip):
         saved_trips = self.list_saved_trips()
-        print("Previously saved trips:")
+        print("Saved trips:")
         for trip in saved_trips:
             color_print("yellow", f"\t{trip}")
         file_name = input("Save your trip to an existing saved file or choose a new name: ")
+        if file_name in saved_trips:
+            self.load_from_json(file_name)
+        # When I load a file I want to update the list in it. Now I think I only save the list in self.
+        # Should I use self.logged... when the user saves a file under a new name and something else when updating?
         file_name += '.wifm'
-        with open('./saved_trips/' + file_name, 'w', encoding='utf-8') as json_file:
+        self.logged_trips.append(new_trip)
+        trip_to_save = self.logged_trips
+
+        """
+        a_dictionary = {"d": 4}
+
+        with open("sample_file.json", "r+") as file:
+            data = json.load(file)
+            data.update(a_dictionary)
+            file.seek(0)
+            json.dump(data, file)
+        """
+        with open('./saved_trips/' + file_name, 'w', encoding='utf-8') as json_file:  # Change 'w' to 'r+'?
             json.dump(trip_to_save, json_file)  # Dumps save trips to a file
 
     @staticmethod
@@ -91,21 +108,21 @@ class Trips:
 
         return files
 
-    def load_from_json(self):
-        saved_trips = self.list_saved_trips()
+    def load_from_json(self, file_name):
+        # saved_trips = self.list_saved_trips()
 
-        while True:
-            print("Saved trips:")
-            for trip in saved_trips:
-                color_print("yellow", f"\t{trip}")
-            file_name = input("Please choose a saving to load: ")
-            if file_name in saved_trips:
-                break
-            color_print("red", f"The name '{file_name}' does not corresponds to any save, please try again.")
+        # while True:
+        #     print("Saved trips:")
+        #     for trip in saved_trips:
+        #         color_print("yellow", f"\t{trip}")
+        #     file_name = input("Please choose a saving to load: ")
+        #     if file_name in saved_trips:
+        #         break
+        #     color_print("red", f"The name '{file_name}' does not corresponds to any save, please try again.")
 
         file_name += '.wifm'
         with open('./saved_trips/' + file_name, 'r', encoding='utf-8') as json_file:
-            return json.load(json_file), file_name
+            return json.load(json_file)
 
     def print_trip(self):
         pass
