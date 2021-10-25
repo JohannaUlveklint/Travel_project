@@ -74,39 +74,40 @@ class Trips:
     def save_to_json(self, new_trip):
         saved_trips = self.list_saved_trips()
         print("Saved trips:")
-        for trip in saved_trips:
-            color_print("yellow", f"\t{trip}")
+        if len(saved_trips) == 0:
+            print('There is no saved trips')
+        else:
+            for trip in saved_trips:
+                color_print("yellow", f"\t{trip}")
         file_name = input("Save your trip to an existing saved file or choose a new name: ")
         if file_name in saved_trips:
-            self.load_from_json(file_name)
-        # When I load a file I want to update the list in it. Now I think I only save the list in self.
-        # Should I use self.logged... when the user saves a file under a new name and something else when updating?
-        file_name += '.wifm'
-        self.logged_trips.append(new_trip)
-        trip_to_save = self.logged_trips
+            data = self.load_from_json(file_name)
+            data.append(new_trip)
+            file_name += '.wifm'
+        else:
+            data = self.logged_trips
+            data.append(new_trip)
+            file_name += '.wifm'
+
+        # trip_to_save = self.logged_trips
 
         """
-        a_dictionary = {"d": 4}
-
-        with open("sample_file.json", "r+") as file:
+        filename = 'your_file.json'
+        entry = {'carl': 33}
+        # 1. Read file contents
+        with open(filename, "r") as file:
             data = json.load(file)
-            data.update(a_dictionary)
-            file.seek(0)
+        # 2. Update json object
+        data.append(entry)
+        # 3. Write json file
+        with open(filename, "w") as file:
             json.dump(data, file)
+            
+                with open('./saved_trips/' + file_name, 'r', encoding='utf-8') as json_file:
+            return json.load(json_file)
         """
-        with open('./saved_trips/' + file_name, 'w', encoding='utf-8') as json_file:  # Change 'w' to 'r+'?
-            json.dump(trip_to_save, json_file)  # Dumps save trips to a file
-
-    @staticmethod
-    def list_saved_trips():
-        files = []
-        for f in listdir('./saved_trips'):
-            if f.endswith('.wifm'):
-                files.append(f.replace('.wifm', ''))
-
-        files = [f.replace('.wifm', '') for f in listdir('./saved_trips') if f.endswith('.wifm')]
-
-        return files
+        with open('./saved_trips/' + file_name, 'w', newline='\n', encoding='utf-8') as json_file:  # No new line
+            json.dump(data, json_file)  # Dumps save trips to a file
 
     def load_from_json(self, file_name):
         # saved_trips = self.list_saved_trips()
@@ -123,6 +124,17 @@ class Trips:
         file_name += '.wifm'
         with open('./saved_trips/' + file_name, 'r', encoding='utf-8') as json_file:
             return json.load(json_file)
+
+    @staticmethod
+    def list_saved_trips():
+        files = []
+        for f in listdir('./saved_trips'):
+            if f.endswith('.wifm'):
+                files.append(f.replace('.wifm', ''))
+
+        files = [f.replace('.wifm', '') for f in listdir('./saved_trips') if f.endswith('.wifm')]
+
+        return files
 
     def print_trip(self):
         pass
