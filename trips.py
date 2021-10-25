@@ -1,4 +1,5 @@
 import json
+import os
 from os import listdir
 
 from terminal_color import color_print
@@ -72,6 +73,9 @@ class Trips:
         # return self.logged_trips
 
     def save_to_json(self, new_trip):
+        # self.logged_trips.append(new_trip)  # Skip?
+        # saved_trips = []
+
         saved_trips = self.list_saved_trips()
         print("Saved trips:")
         if len(saved_trips) == 0:
@@ -80,34 +84,47 @@ class Trips:
             for trip in saved_trips:
                 color_print("yellow", f"\t{trip}")
         file_name = input("Save your trip to an existing saved file or choose a new name: ")
+        # file_name += '.json'
+
         if file_name in saved_trips:
-            data = self.load_from_json(file_name)
+            with open('./saved_trips/' + file_name, 'r', newline='\n', encoding='utf-8') as file:  # No new line
+                data = json.load(file)
             data.append(new_trip)
-            file_name += '.wifm'
+
+            with open('./saved_trips/' + file_name, 'w', encoding='utf-8') as file:  # , newline='\n'
+                json.dump(data, file)
+            print(new_trip)
+            """
+
+                      https://blog.finxter.com/how-to-append-data-to-a-json-file-in-python/
+                      filename = 'your_file.json'
+                      entry = {'carl': 33}
+                      # 1. Read file contents
+                      with open(filename, "r") as file:
+                          data = json.load(file)
+                      # 2. Update json object
+                      data.append(entry)
+                      # 3. Write json file
+                      with open(filename, "w") as file:
+                          json.dump(data, file)
+                      """
+            # This removes the final ']'
+            # with open('./saved_trips/' + file_name, 'rb+', encoding='utf-8') as f:
+            #     f.seek(-1, os.SEEK_END)
+            #     f.truncate()
+            #
+            # # This appends the new dictionary
+            # with open('./saved_trips/' + file_name, 'a', encoding='utf-8') as f:
+            #     f.write(',')
+            #     f.write(dumps({'n': 1}))
+            #     f.write(']')
         else:
-            data = self.logged_trips
-            data.append(new_trip)
-            file_name += '.wifm'
+            # data = self.logged_trips
+            saved_trips.append(new_trip)
+            with open('./saved_trips/' + file_name, 'w', encoding='utf-8') as file:  # , newline='\n'
+                json.dump(saved_trips, file)  # Dumps save trips to a file
 
-        # trip_to_save = self.logged_trips
 
-        """
-        filename = 'your_file.json'
-        entry = {'carl': 33}
-        # 1. Read file contents
-        with open(filename, "r") as file:
-            data = json.load(file)
-        # 2. Update json object
-        data.append(entry)
-        # 3. Write json file
-        with open(filename, "w") as file:
-            json.dump(data, file)
-            
-                with open('./saved_trips/' + file_name, 'r', encoding='utf-8') as json_file:
-            return json.load(json_file)
-        """
-        with open('./saved_trips/' + file_name, 'w', newline='\n', encoding='utf-8') as json_file:  # No new line
-            json.dump(data, json_file)  # Dumps save trips to a file
 
     def load_from_json(self, file_name):
         # saved_trips = self.list_saved_trips()
@@ -121,18 +138,18 @@ class Trips:
         #         break
         #     color_print("red", f"The name '{file_name}' does not corresponds to any save, please try again.")
 
-        file_name += '.wifm'
+        # file_name += '.json'
         with open('./saved_trips/' + file_name, 'r', encoding='utf-8') as json_file:
             return json.load(json_file)
 
     @staticmethod
     def list_saved_trips():
-        files = []
-        for f in listdir('./saved_trips'):
-            if f.endswith('.wifm'):
-                files.append(f.replace('.wifm', ''))
+        # files = []
+        # for f in listdir('./saved_trips'):
+        #     if f.endswith('.json'):
+        #         files.append(f.replace('.json', ''))
 
-        files = [f.replace('.wifm', '') for f in listdir('./saved_trips') if f.endswith('.wifm')]
+        files = [f.replace('.json', '') for f in listdir('./saved_trips') if f.endswith('.json')]
 
         return files
 
