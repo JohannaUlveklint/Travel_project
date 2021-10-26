@@ -69,16 +69,19 @@ class Travel:
         clipboard.copy(map_url)
         print('Please open a web browser and enter Ctrl + V to see your trip on a map!')
         input()
-        print('Car:')
+        color_print('red', 'Car:')
+        # print('Car:')
         print('====')
         print(f'Car distance {self.m_to_km(cd)} km.\nCar duration {self.sec_converter(cdu)}.')
-        print('Electric Bike:')
+        color_print('yellow', 'Electric Bike:')
+        # print('Electric Bike:')
         print('==============')
         print(f'Electric bike distance {self.m_to_km(ebd)} km.\nElectric bike duration {self.sec_converter(ebdu)}.')
-        print('Regular Bike:')
+        color_print('green', 'Regular Bike:')
+        # print('Regular Bike:')
         print('=============')
         print(f'Regular bike distance {self.m_to_km(rbd)} km.\nRegular bike duration {self.sec_converter(rbdu)}.')
-        print('==============')
+        print('==============================')
         # Change bold to colors?
         print(f'If you go this trip by bike it will actually only take '
               f'' + '\033[1m' + f'{self.sec_converter(rbdu) - self.sec_converter(cdu)} minutes' + '\033[0m' + ' more. '
@@ -92,9 +95,12 @@ class Travel:
               '\033[0m' + ' one way (calculated on an average new car)! That is ' + '\033[1m' +
               f'{round((cd * 0.12 * 43 / 1000), 2)} kg' + '\033[0m' + ' if you are commuting a whole month.')
         print('\nLiving without a car saves an average of 2.4 tons of CO2 each year. If we are to live sustainable we')
-        print('can only emit 3 tons of CO2 per person and year. You can save the world by bike!')
-        print('\033[1m' + 'So Whats __init__ For You?' + '\033[0m' + ' A stronger body, more spare time and a super '
-                                                                     'hero cape. The choice is yours.')
+        print('can only emit 3 tons of CO2 per person and year.' + '\033[1m' + ' You can save the world by bike!\n')
+        color_print('magenta', '\033[1m' + 'So Whats __init__ For You?' + '\033[0m' + ' A stronger body, more spare '
+                                                                'time and a super hero cape. The choice is yours.')
+        # print('\033[1m' + 'So Whats __init__ For You?' + '\033[0m' + ' A stronger body, more spare time and a super '
+        #                                                              'hero cape. The choice is yours.')
+        input()
 
         return cd, rbd, ebd, cdu, rbdu, ebdu  # Return emissions?
 
