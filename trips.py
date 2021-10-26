@@ -94,37 +94,28 @@ class Trips:
             with open('./saved_trips/' + file_name, 'w', encoding='utf-8') as file:  # , newline='\n'
                 json.dump(data, file)
             print(new_trip)
-            """
 
-                      https://blog.finxter.com/how-to-append-data-to-a-json-file-in-python/
-                      filename = 'your_file.json'
-                      entry = {'carl': 33}
-                      # 1. Read file contents
-                      with open(filename, "r") as file:
-                          data = json.load(file)
-                      # 2. Update json object
-                      data.append(entry)
-                      # 3. Write json file
-                      with open(filename, "w") as file:
-                          json.dump(data, file)
-                      """
-            # This removes the final ']'
-            # with open('./saved_trips/' + file_name, 'rb+', encoding='utf-8') as f:
-            #     f.seek(-1, os.SEEK_END)
-            #     f.truncate()
-            #
-            # # This appends the new dictionary
-            # with open('./saved_trips/' + file_name, 'a', encoding='utf-8') as f:
-            #     f.write(',')
-            #     f.write(dumps({'n': 1}))
-            #     f.write(']')
         else:
-            # data = self.logged_trips
-            saved_trips.append(new_trip)
+            data = self.logged_trips
+            # saved_trips.append(new_trip)
+            data.append(new_trip)
             with open('./saved_trips/' + file_name, 'w', encoding='utf-8') as file:  # , newline='\n'
-                json.dump(saved_trips, file)  # Dumps save trips to a file
+                json.dump(data, file)  # Dumps save trips to a file
 
+        """
 
+                  https://blog.finxter.com/how-to-append-data-to-a-json-file-in-python/
+                  filename = 'your_file.json'
+                  entry = {'carl': 33}
+                  # 1. Read file contents
+                  with open(filename, "r") as file:
+                      data = json.load(file)
+                  # 2. Update json object
+                  data.append(entry)
+                  # 3. Write json file
+                  with open(filename, "w") as file:
+                      json.dump(data, file)
+                  """
 
     def load_from_json(self, file_name):
         # saved_trips = self.list_saved_trips()
@@ -149,7 +140,8 @@ class Trips:
         #     if f.endswith('.json'):
         #         files.append(f.replace('.json', ''))
 
-        files = [f.replace('.json', '') for f in listdir('./saved_trips') if f.endswith('.json')]
+        # files = [f.replace('.json', '') for f in listdir('./saved_trips') if f.endswith('.json')]
+        files = [f for f in listdir('./saved_trips') if f.endswith('.json')]
 
         return files
 
