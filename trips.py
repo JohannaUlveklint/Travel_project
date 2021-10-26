@@ -87,6 +87,7 @@ class Trips:
         # file_name += '.json'
 
         if file_name in saved_trips:
+            file_name += '.json'
             with open('./saved_trips/' + file_name, 'r', newline='\n', encoding='utf-8') as file:  # No new line
                 data = json.load(file)
             data.append(new_trip)
@@ -96,6 +97,7 @@ class Trips:
             print(new_trip)
 
         else:
+            file_name += '.json'
             data = self.logged_trips
             # saved_trips.append(new_trip)
             data.append(new_trip)
@@ -140,8 +142,8 @@ class Trips:
         #     if f.endswith('.json'):
         #         files.append(f.replace('.json', ''))
 
-        # files = [f.replace('.json', '') for f in listdir('./saved_trips') if f.endswith('.json')]
-        files = [f for f in listdir('./saved_trips') if f.endswith('.json')]
+        files = [f.replace('.json', '') for f in listdir('./saved_trips') if f.endswith('.json')]
+        # files = [f for f in listdir('./saved_trips') if f.endswith('.json')]
 
         return files
 
