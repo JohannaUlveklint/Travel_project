@@ -2,6 +2,7 @@ import datetime
 import requests
 from decimal import Decimal
 from geopy.geocoders import Nominatim
+import clipboard
 from terminal_color import color_print
 
 
@@ -58,20 +59,25 @@ class Travel:
         car_duration = car_url['features'][0]['properties']['segments'][0]['duration']
         reg_bike_duration = reg_bike_url['features'][0]['properties']['segments'][0]['duration']
         elect_bike_duration = elect_bike_url['features'][0]['properties']['segments'][0]['duration']
+
+        map_url = self.print_map(self.from_lat, self.from_long, self.to_lat, self.to_long)
         return car_distance, reg_bike_distance, elect_bike_distance, car_duration, reg_bike_duration, \
-               elect_bike_duration
+               elect_bike_duration, map_url
 
     def print_distance_and_duration(self):
-        cd, rbd, ebd, cdu, rbdu, ebdu = self.get_distance_and_duration()
+        cd, rbd, ebd, cdu, rbdu, ebdu, map_url = self.get_distance_and_duration()
+        clipboard.copy(map_url)
+        print('Please open a web browser and enter Ctrl + V to see your trip on a map!')
+        input()
         print('Car:')
         print('====')
         print(f'Car distance {self.m_to_km(cd)} km.\nCar duration {self.sec_converter(cdu)}.')
         print('Electric Bike:')
         print('==============')
-        print(f'Electric bike distance {self.m_to_km(ebd)} km.\nElectric bike duration {self.sec_converter(ebdu)}')
+        print(f'Electric bike distance {self.m_to_km(ebd)} km.\nElectric bike duration {self.sec_converter(ebdu)}.')
         print('Regular Bike:')
         print('=============')
-        print(f'Regular bike distance {self.m_to_km(rbd)} km.\nRegular bike duration {self.sec_converter(rbdu)}')
+        print(f'Regular bike distance {self.m_to_km(rbd)} km.\nRegular bike duration {self.sec_converter(rbdu)}.')
         print('==============')
         # Change bold to colors?
         print(f'If you go this trip by bike it will actually only take '
@@ -80,15 +86,24 @@ class Travel:
               'if you are electric. :)')
         print('Furthermore, extra time for rush hour traffic and finding a parking lot should be accounted for when '
               'calculating total travel time by car.')
-        print('Cycling ' + '\033[1m' + f'strengthens your body' + '\033[0m' + ' and ' + '\033[1m' +
+        print('\nCycling ' + '\033[1m' + f'strengthens your body' + '\033[0m' + ' and ' + '\033[1m' +
               'increases spare time' + '\033[0m' + ' since you workout and travel at the same time.')
         print(f'You also will have ' + '\033[1m' + f'cut your CO2 emission with {round((cd * 0.12), 2)} grams' +
               '\033[0m' + ' one way (calculated on an average new car)! That is ' + '\033[1m' +
               f'{round((cd * 0.12 * 43 / 1000), 2)} kg' + '\033[0m' + ' if you are commuting a whole month.')
-        print('\033[1m' + 'So Whats __init__ For You?' + '\033[0m' + ' A stronger body, more spare time and less '
-              'polluting. The choice is yours.')
+        print('\nLiving without a car saves an average of 2.4 tons of CO2 each year. If we are to live sustainable we')
+        print('can only emit 3 tons of CO2 per person and year. You can save the world by bike!')
+        print('\033[1m' + 'So Whats __init__ For You?' + '\033[0m' + ' A stronger body, more spare time and a super '
+                                                                     'hero cape. The choice is yours.')
 
         return cd, rbd, ebd, cdu, rbdu, ebdu  # Return emissions?
+
+    def print_map(self, from_lat, from_long, to_lat, to_long):
+        base_url = 'https://www.mapquestapi.com/staticmap/v5/map?start='
+        api_key = 'v2ndcyw0ByFQHDe5LEHCSbtCmvgcJ8cn'
+        url = f'{base_url}{from_lat},{from_long}&end={to_lat},{to_long}&size=600,400@2x&key={api_key}'
+        return url
+
 
     @staticmethod
     def sec_converter(time_in_sec):

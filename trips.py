@@ -13,7 +13,7 @@ class Trips:
         self.travel = Travel()
 
     @staticmethod
-    def __get_user_input_int(question):
+    def __get_user_input_int(question):  # Skip int in the method name
         user_input = 0
         while True:
             color_print('green', question)

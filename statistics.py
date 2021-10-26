@@ -1,7 +1,7 @@
 import json
 import datetime
 from decimal import Decimal
-import matplotlib
+# import matplotlib
 
 
 class Statistics:
@@ -28,9 +28,11 @@ class Statistics:
                 if line['week'] == week:
                     meter += line['distance']
                     distance = self.m_to_km(meter)
-                # if not all line['week'] != week:  # How do I check if logs from a certain week is missing?
+                # if not all line['week'] == week:  # How do I check if logs from a certain week is missing?
                 #     print(f'There are no logged/saved trips from week {week}.')
                 #     break
+
+                # Nested loop to sort by year and week (and month), datetime?
     
             return week, distance
     """
@@ -53,7 +55,7 @@ class Statistics:
 
         week_distances = {}
         for i in week_numbers.values():
-            week_distances[i] = self.calc_weekly_distance(i)[1]  # How do I pass the value of i to the method?
+            week_distances[i] = self.calc_weekly_distance(i)[1]
         weeks = week_distances.keys()
         distances = week_distances.values()
         return weeks, distances
