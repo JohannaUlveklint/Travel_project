@@ -40,6 +40,12 @@ class Travel:
         base_url = 'https://api.openrouteservice.org/v2/directions/'
         vehicles = ['driving-car', 'cycling-regular', 'cycling-electric']
 
+        # Use something like this instead of return the comprehension directly?
+        # response = [requests.get(f"{base_url}{v}?" + search).json() for v in vehicles]
+        # if response.ok:
+        #     return response.text
+        # else:
+        #     return 'Bad Request!'
         return [requests.get(f"{base_url}{v}?" + search).json() for v in vehicles]
 
     def get_distance_and_duration(self):

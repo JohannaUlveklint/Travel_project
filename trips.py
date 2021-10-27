@@ -80,7 +80,6 @@ class Trips:
             with open('./saved_trips/' + file_name, 'r', encoding='utf-8') as file:
                 data = json.load(file)
             data.append(new_trip)
-
             with open('./saved_trips/' + file_name, 'w', encoding='utf-8') as file:
                 json.dump(data, file)
         else:

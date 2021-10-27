@@ -10,29 +10,26 @@ class Statistics:
     def __init__(self):
         pass
     
-    def calc_distance(self):
-        with open('./saved_trips/test_statistics.wifm', 'r', encoding='utf-8') as json_file:
-            # Change file later in all methods so that the user chooses which file to get data from
-            data = json.load(json_file)
-            meter = 0
-            for line in data:
-                meter += line['distance']
-            distance = self.m_to_km(meter)
-        return distance
+    # def calc_total_distance(self):
+    #     data = self.load_file()
+    #     meter = 0
+    #     for line in data:
+    #         meter += line['distance']
+    #     distance = self.m_to_km(meter)
+    #     return distance
     
     def calc_weekly_distance(self, week):
-        with open('./saved_trips/test_statistics.wifm', 'r', encoding='utf-8') as json_file:
-            data = json.load(json_file)
-            meter = 0
-            distance = 0
-    
-            for line in data:
-                if line['week'] == week:
-                    meter += line['distance']
-                    distance = self.m_to_km(meter)
-                # How do I check if logs from a certain week is missing?
-    
-            return week, distance
+        data = self.load_file()
+        meter = 0
+        distance = 0
+
+        for line in data:
+            if line['week'] == week:
+                meter += line['distance']
+                distance = self.m_to_km(meter)
+            # How do I check if logs from a certain week is missing?
+
+        return week, distance
 
     def compare_weeks(self):
         color_print('yellow', "\nLet's compare the distances you have cycled on a week to week basis!")
@@ -51,7 +48,7 @@ class Statistics:
 
     @staticmethod
     def bar_plot(weeks, distances):  # If the user chooses weeks with a gap between,
-        # the x axe will show the weeks in between.
+        # the x axe will show the weeks in the gap.
         ax = plt.figure().gca()
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
         plt.title('Bike Distance Bar Plot for Chosen Weeks')
@@ -60,33 +57,30 @@ class Statistics:
         plt.bar(weeks, distances)
         plt.show()
     
-    def calc_duration(self):
-        with open('./saved_trips/test_statistics.wifm', 'r', encoding='utf-8') as json_file:
-            data = json.load(json_file)
-            seconds = 0
-            for line in data:
-                seconds += line['duration']
-            duration = self.sec_converter(seconds)
-        return duration
+    # def calc_duration(self):
+    #     data = self.load_file()
+    #     seconds = 0
+    #     for line in data:
+    #         seconds += line['duration']
+    #     duration = self.sec_converter(seconds)
+    #     return duration
 
     def three_longest_trips(self):
-        with open('./saved_trips/test_statistics.wifm', 'r', encoding='utf-8') as json_file:
-            data = json.load(json_file)
-            lengths = [self.m_to_km(line['distance']) for line in data]
-            lengths.sort(reverse=True)
-            color_print('yellow', '\nThese are the three longest trips you have made:')
-            count = 1
-            for i in lengths[:3]:
-                print(f'{count}. {i} km')
-                count += 1
+        data = self.load_file()
+        lengths = [self.m_to_km(line['distance']) for line in data]
+        lengths.sort(reverse=True)
+        color_print('yellow', '\nThese are the three longest trips you have made:')
+        count = 1
+        for i in lengths[:3]:
+            print(f'{count}. {i} km')
+            count += 1
 
     def saved_emissions(self):
-        with open('./saved_trips/test_statistics.wifm', 'r', encoding='utf-8') as json_file:
-            data = json.load(json_file)
-            emissions = 0
-            for line in data:
-                emissions += round((self.m_to_km(line['distance'] * 0.12)), 2)
-            color_print('yellow', f'\nBy making all your trips by bike you have saved {emissions} kg CO2 equivalents!')
+        data = self.load_file()
+        emissions = 0
+        for line in data:
+            emissions += round((self.m_to_km(line['distance'] * 0.12)), 2)
+        color_print('yellow', f'\nBy making all your trips by bike you have saved {emissions} kg CO2 equivalents!')
 
     @staticmethod
     def m_to_km(meter):
@@ -98,3 +92,9 @@ class Statistics:
         time = datetime.timedelta(seconds=time_in_sec)
         time_without_ms = time - datetime.timedelta(microseconds=time.microseconds)
         return time_without_ms
+
+    @staticmethod
+    def load_file():
+        with open('saved_trips/test_statistics.json', 'r', encoding='utf-8') as json_file:
+            data = json.load(json_file)
+        return data
