@@ -16,7 +16,6 @@ class Presentation:
         running = True
 
         while running:
-            # I will later add more alternatives to see statistics.
             color_print('green', '\nPlease choose between following alternatives:')
             color_print('green', 'Press [1] to comparing travel time.')
             color_print('green', 'Press [2] to save a bike trip.')

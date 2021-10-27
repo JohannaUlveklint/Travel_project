@@ -24,17 +24,13 @@ class Statistics:
         with open('./saved_trips/test_statistics.wifm', 'r', encoding='utf-8') as json_file:
             data = json.load(json_file)
             meter = 0
-            distance = 0  # Do I really need to declare distance here?
+            distance = 0
     
             for line in data:
                 if line['week'] == week:
                     meter += line['distance']
                     distance = self.m_to_km(meter)
-                # if not all line['week'] == week:  # How do I check if logs from a certain week is missing?
-                #     print(f'There are no logged/saved trips from week {week}.')
-                #     break
-
-                # Nested loop to sort by year and week (and month), datetime?
+                # How do I check if logs from a certain week is missing?
     
             return week, distance
 
@@ -67,7 +63,7 @@ class Statistics:
     def calc_duration(self):
         with open('./saved_trips/test_statistics.wifm', 'r', encoding='utf-8') as json_file:
             data = json.load(json_file)
-            seconds = 0  # Comprehension
+            seconds = 0
             for line in data:
                 seconds += line['duration']
             duration = self.sec_converter(seconds)
@@ -92,7 +88,6 @@ class Statistics:
                 emissions += round((self.m_to_km(line['distance'] * 0.12)), 2)
             color_print('yellow', f'\nBy making all your trips by bike you have saved {emissions} kg CO2 equivalents!')
 
-
     @staticmethod
     def m_to_km(meter):
         km = Decimal(meter / 1000).quantize(Decimal("1.000"))
@@ -103,20 +98,3 @@ class Statistics:
         time = datetime.timedelta(seconds=time_in_sec)
         time_without_ms = time - datetime.timedelta(microseconds=time.microseconds)
         return time_without_ms
-    
-    
-def main():
-    statistics = Statistics()
-    print(statistics.calc_distance())
-    statistics.three_longest_trips()
-
-    # week, distance = statistics.calc_weekly_distance(18)
-    # print(f'Distance week {week}: {distance} km!')
-
-    # print(week_distance)  # {18: Decimal('39.693'), 19: Decimal('39.893')}
-
-
-
-
-if __name__ == '__main__':
-    main()
