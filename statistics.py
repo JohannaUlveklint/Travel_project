@@ -39,6 +39,7 @@ class Statistics:
             return week, distance
 
     def compare_weeks(self):
+        color_print('yellow', "\nLet's compare the distances you have cycled on a week to week basis!")
         num_of_weeks = int(input('How many weeks do you want to compare? '))
         week_numbers = {}
         for i in range(num_of_weeks):
@@ -52,7 +53,9 @@ class Statistics:
         self.bar_plot(weeks, distances)
         return weeks, distances
 
-    def bar_plot(self, weeks, distances):
+    @staticmethod
+    def bar_plot(weeks, distances):  # If the user chooses weeks with a gap between,
+        # the x axe will show the weeks in between.
         ax = plt.figure().gca()
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
         plt.title('Bike Distance Bar Plot for Chosen Weeks')
@@ -75,11 +78,20 @@ class Statistics:
             data = json.load(json_file)
             lengths = [self.m_to_km(line['distance']) for line in data]
             lengths.sort(reverse=True)
-            color_print('yellow', '\nThese are the three longest trips for the chosen weeks:')
+            color_print('yellow', '\nThese are the three longest trips you have made:')
             count = 1
             for i in lengths[:3]:
                 print(f'{count}. {i} km')
                 count += 1
+
+    def saved_emissions(self):
+        with open('./saved_trips/test_statistics.wifm', 'r', encoding='utf-8') as json_file:
+            data = json.load(json_file)
+            emissions = 0
+            for line in data:
+                emissions += round((self.m_to_km(line['distance'] * 0.12)), 2)
+            color_print('yellow', f'\nBy making all your trips by bike you have saved {emissions} kg CO2 equivalents!')
+
 
     @staticmethod
     def m_to_km(meter):

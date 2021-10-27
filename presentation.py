@@ -1,6 +1,7 @@
 from terminal_color import color_print
 from travel import Travel
 from trips import Trips
+from statistics import Statistics
 
 
 class Presentation:
@@ -19,23 +20,31 @@ class Presentation:
             color_print('green', '\nPlease choose between following alternatives:')
             color_print('green', 'Press [1] to comparing travel time.')
             color_print('green', 'Press [2] to save a bike trip.')
-            color_print('green', 'Press [3] to ?.')
+            color_print('green', 'Press [3] to see statistics for your saved bike trips.')
             color_print('green', 'Press [4] to print saved trips')
             color_print('green', 'Press [5] to quit.')
-            user_input = input('Now make your choice: ')
+            user_input = input('What do you want to do? ')
 
             travel = Travel()  # Have these in __init__?
             trips = Trips()
+            statistics = Statistics()
 
             match user_input:
                 case "1":
                     travel.print_distance_and_duration()
+                    input()
                 case "2":
                     trips.log_trip()
+                    input()
                 case "3":
-                    pass
+                    statistics.saved_emissions()
+                    statistics.three_longest_trips()
+                    input()
+                    statistics.compare_weeks()
+                    input()
                 case "4":
-                    trips.load_from_json()
+                    trips.load_from_json()  # Make a user-friendly print method
+                    input()
                 case "5":
                     color_print('cyan', 'Thank you for visiting us. Have a nice day and welcome back!')
                     running = False
