@@ -1,14 +1,20 @@
 import unittest
 from unittest.mock import patch
-from travel import Travel
+import travel
 
 
-class MyTestCase(unittest.TestCase):
-    def test_rush_hour(self):
-        travel = Travel()
-        with patch('builtins.input', return_value='y'):
-            speed = travel.rush_hour()  # Should I use self.speed here?
-        self.assertEqual('40', speed)
+class TestTravel(unittest.TestCase):
+    def test_m_to_km(self):
+        self.assertEqual(travel.m_to_km(5316.2), 5.316)
+        self.assertEqual(travel.m_to_km(-5316.2), -5.316)
+
+    def test_sec_converter(self):
+        self.assertEqual(travel.sec_converter)
+    """
+            def sec_converter(time_in_sec):
+        time = datetime.timedelta(seconds=time_in_sec)
+        time_without_ms = time - datetime.timedelta(microseconds=time.microseconds)
+    """
 
     """
        def get_url(self):
@@ -24,24 +30,24 @@ class MyTestCase(unittest.TestCase):
 
         return [requests.get(f"{base_url}{v}?" + search).json() for v in vehicles]
     """
-    def test_get_url(self):
-        with patch('travel.requests.get') as mocked_get:
-            mocked_get.return_value.ok = True
-            mocked_get.return_value.text = 'Success!'
-
-            url = self.get_url()
-            mocked_get.assert_called_with('https://api.openrouteservice.org/v2/directions/driving-car?api_key='
-            '5b3ce3597851110001cf6248d62eca3e4d314dba96c2e5596a0f8074&start=11.9381581,57.7183072&end='
-            '11.9948842,57.7104969')
-            self.assertEqual(url, 'Success!')
-
-            mocked_get.return_value.ok = False
-
-            url = self.get_url()
-            mocked_get.assert_called_with('https://api.openrouteservice.org/v2/directions/driving-car?api_key='
-                                          '5b3ce3597851110001cf6248d62eca3e4d314dba96c2e5596a0f8074&start=11.9381581,57.7183072&end='
-                                          '11.9948842,57.7104969')
-            self.assertEqual(url, 'Success!')
+    # def test_get_url(self):
+    #     with patch('travel.requests.get') as mocked_get:
+    #         mocked_get.return_value.ok = True
+    #         mocked_get.return_value.text = 'Success!'
+    #
+    #         url = self.get_url()
+    #         mocked_get.assert_called_with('https://api.openrouteservice.org/v2/directions/driving-car?api_key='
+    #         '5b3ce3597851110001cf6248d62eca3e4d314dba96c2e5596a0f8074&start=11.9381581,57.7183072&end='
+    #         '11.9948842,57.7104969')
+    #         self.assertEqual(url, 'Success!')
+    #
+    #         mocked_get.return_value.ok = False
+    #
+    #         url = self.get_url()
+    #         mocked_get.assert_called_with('https://api.openrouteservice.org/v2/directions/driving-car?api_key='
+    #                                       '5b3ce3597851110001cf6248d62eca3e4d314dba96c2e5596a0f8074&start=11.9381581,57.7183072&end='
+    #                                       '11.9948842,57.7104969')
+    #         self.assertEqual(url, 'Success!')
 
 
     """
