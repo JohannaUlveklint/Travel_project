@@ -3,6 +3,7 @@ import datetime
 from decimal import Decimal
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
+from terminal_color import color_print
 
 
 class Statistics:
@@ -11,7 +12,7 @@ class Statistics:
     
     def calc_distance(self):
         with open('./saved_trips/test_statistics.wifm', 'r', encoding='utf-8') as json_file:
-            # Change file later so that the user chooses which file to get data from
+            # Change file later in all methods so that the user chooses which file to get data from
             data = json.load(json_file)
             meter = 0
             for line in data:
@@ -36,18 +37,7 @@ class Statistics:
                 # Nested loop to sort by year and week (and month), datetime?
     
             return week, distance
-    """
-    var={}
-    var[1] = 10
-    var[2] = 100
-    var[3] = 1000
-    
-    test={}
-    for i in range(1,4):
-        test[i] = var[i] +1
-    
-    print(test)
-    """
+
     def compare_weeks(self):
         num_of_weeks = int(input('How many weeks do you want to compare? '))
         week_numbers = {}
@@ -59,6 +49,7 @@ class Statistics:
             week_distances[i] = self.calc_weekly_distance(i)[1]
         weeks = week_distances.keys()
         distances = week_distances.values()
+        self.bar_plot(weeks, distances)
         return weeks, distances
 
     def bar_plot(self, weeks, distances):
@@ -69,25 +60,34 @@ class Statistics:
         plt.ylabel('Distance in km')
         plt.bar(weeks, distances)
         plt.show()
-
-    def m_to_km(self, meter):
-            km = Decimal(meter / 1000).quantize(Decimal("1.000"))
-            return km
-    
-    # def m_to_mil(self, meter):
-    #         mil = Decimal(meter / 10000).quantize(Decimal("1.000"))
-    #         return mil
     
     def calc_duration(self):
         with open('./saved_trips/test_statistics.wifm', 'r', encoding='utf-8') as json_file:
             data = json.load(json_file)
-            seconds = 0
+            seconds = 0  # Comprehension
             for line in data:
                 seconds += line['duration']
             duration = self.sec_converter(seconds)
         return duration
-    
-    def sec_converter(self, time_in_sec):
+
+    def three_longest_trips(self):
+        with open('./saved_trips/test_statistics.wifm', 'r', encoding='utf-8') as json_file:
+            data = json.load(json_file)
+            lengths = [self.m_to_km(line['distance']) for line in data]
+            lengths.sort(reverse=True)
+            color_print('yellow', '\nThese are the three longest trips for the chosen weeks:')
+            count = 1
+            for i in lengths[:3]:
+                print(f'{count}. {i} km')
+                count += 1
+
+    @staticmethod
+    def m_to_km(meter):
+        km = Decimal(meter / 1000).quantize(Decimal("1.000"))
+        return km
+
+    @staticmethod
+    def sec_converter(time_in_sec):
         time = datetime.timedelta(seconds=time_in_sec)
         time_without_ms = time - datetime.timedelta(microseconds=time.microseconds)
         return time_without_ms
@@ -96,22 +96,13 @@ class Statistics:
 def main():
     statistics = Statistics()
     print(statistics.calc_distance())
+    statistics.three_longest_trips()
+
     # week, distance = statistics.calc_weekly_distance(18)
     # print(f'Distance week {week}: {distance} km!')
 
-    weeks, distances = statistics.compare_weeks()  # Returns lists weeks and distances
-    statistics.bar_plot(weeks, distances)
     # print(week_distance)  # {18: Decimal('39.693'), 19: Decimal('39.893')}
 
-
-    # print(weeks)  # dict_keys([18, 19])
-    # print(distances)  # dict_values([Decimal('39.693'), Decimal('39.893')])
-    #
-    # for week in weeks:
-    #     print(week)
-    #
-    # for distance in distances:
-    #     print(distance)
 
 
 
