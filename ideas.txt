@@ -13,6 +13,8 @@ PRACTICALITIES:
 * UML
 * gitignore?
 * Make a user
+* Download matplotlib‑3.4.3‑cp310‑cp310‑win_amd64.whl from https://www.lfd.uci.edu/~gohlke/pythonlibs/#matplotlib
+  to make matplotlib work within 3.10
 
 
 PARAMETERS

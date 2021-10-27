@@ -1,7 +1,8 @@
 import json
 import datetime
 from decimal import Decimal
-# import matplotlib
+import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 
 
 class Statistics:
@@ -59,7 +60,16 @@ class Statistics:
         weeks = week_distances.keys()
         distances = week_distances.values()
         return weeks, distances
-    
+
+    def bar_plot(self, weeks, distances):
+        ax = plt.figure().gca()
+        ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+        plt.title('Bike Distance Bar Plot for Chosen Weeks')
+        plt.xlabel('Weeks')
+        plt.ylabel('Distance in km')
+        plt.bar(weeks, distances)
+        plt.show()
+
     def m_to_km(self, meter):
             km = Decimal(meter / 1000).quantize(Decimal("1.000"))
             return km
@@ -89,19 +99,19 @@ def main():
     # week, distance = statistics.calc_weekly_distance(18)
     # print(f'Distance week {week}: {distance} km!')
 
-    week_distance = statistics.compare_weeks()  # Returns dict week_distance{week_number: km}
-    print(week_distance)  # {18: Decimal('39.693'), 19: Decimal('39.893')}
-    weeks = week_distance.keys()
-    distances = week_distance.values()
+    weeks, distances = statistics.compare_weeks()  # Returns lists weeks and distances
+    statistics.bar_plot(weeks, distances)
+    # print(week_distance)  # {18: Decimal('39.693'), 19: Decimal('39.893')}
 
-    print(weeks)  # dict_keys([18, 19])
-    print(distances)  # dict_values([Decimal('39.693'), Decimal('39.893')])
 
-    for week in weeks:
-        print(week)
-
-    for distance in distances:
-        print(distance)
+    # print(weeks)  # dict_keys([18, 19])
+    # print(distances)  # dict_values([Decimal('39.693'), Decimal('39.893')])
+    #
+    # for week in weeks:
+    #     print(week)
+    #
+    # for distance in distances:
+    #     print(distance)
 
 
 
