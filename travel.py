@@ -41,12 +41,11 @@ class Travel:
         vehicles = ['driving-car', 'cycling-regular', 'cycling-electric']
 
         # Use something like this instead of return the comprehension directly?
-        # response = [requests.get(f"{base_url}{v}?" + search).json() for v in vehicles]
-        # if response.ok:
-        #     return response.text
-        # else:
-        #     return 'Bad Request!'
-        return [requests.get(f"{base_url}{v}?" + search).json() for v in vehicles]
+        response = [requests.get(f"{base_url}{v}?" + search).json() for v in vehicles]
+        for i in response:
+            if not i.ok:
+                return 'Bad Response!'
+        return response
 
     def get_distance_and_duration(self):
         self.get_lat_and_long()
@@ -73,13 +72,13 @@ class Travel:
 
         color_print('red', 'Car:')
         print('====')
-        print(f'Car distance {self.m_to_km(cd)} km.\nCar duration {self.sec_converter(cdu)}.')
+        print(f'Car distance {self.m_to_km(cd):.3f} km.\nCar duration {self.sec_converter(cdu)}.')
         color_print('yellow', 'Electric Bike:')
         print('==============')
-        print(f'Electric bike distance {self.m_to_km(ebd)} km.\nElectric bike duration {self.sec_converter(ebdu)}.')
+        print(f'Electric bike distance {self.m_to_km(ebd):.3f} km.\nElectric bike duration {self.sec_converter(ebdu)}.')
         color_print('green', 'Regular Bike:')
         print('=============')
-        print(f'Regular bike distance {self.m_to_km(rbd)} km.\nRegular bike duration {self.sec_converter(rbdu)}.')
+        print(f'Regular bike distance {self.m_to_km(rbd):.3f} km.\nRegular bike duration {self.sec_converter(rbdu)}.')
         print('==============================')
 
         # Change bold to colors?
@@ -106,8 +105,12 @@ class Travel:
     def print_map(from_lat, from_long, to_lat, to_long):
         base_url = 'https://www.mapquestapi.com/staticmap/v5/map?start='
         api_key = 'v2ndcyw0ByFQHDe5LEHCSbtCmvgcJ8cn'
-        url = f'{base_url}{from_lat},{from_long}&end={to_lat},{to_long}&size=600,400@2x&key={api_key}'
-        return url
+        response = requests.get(f'{base_url}{from_lat},{from_long}&end={to_lat},{to_long}&size=600,400@2x&key='
+                                f'{api_key}')
+        if response.ok:
+            return response.url
+        else:
+            return 'Bad Request!'
 
     @staticmethod
     def sec_converter(time_in_sec):
@@ -117,5 +120,15 @@ class Travel:
 
     @staticmethod
     def m_to_km(meter):
-        km = Decimal(meter / 1000).quantize(Decimal("1.000"))
+        km = meter / 1000
         return km
+
+
+def main():
+    travel = Travel()
+    minutes = travel.sec_converter(60)
+    print(minutes)
+
+
+if __name__ == '__main__':
+    main()

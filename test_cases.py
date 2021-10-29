@@ -1,78 +1,69 @@
+import datetime
 import unittest
 from unittest.mock import patch
-import travel
+
+from travel import Travel
 
 
 class TestTravel(unittest.TestCase):
+    travel = Travel()
+
     def test_m_to_km(self):
-        self.assertEqual(travel.m_to_km(5316.2), 5.316)
-        self.assertEqual(travel.m_to_km(-5316.2), -5.316)
+        answer = round(self.travel.m_to_km(5316.2), 3)
+        wanted = round(5.316, 3)
+        self.assertEqual(answer, wanted)
 
     def test_sec_converter(self):
-        self.assertEqual(travel.sec_converter)
-    """
-            def sec_converter(time_in_sec):
-        time = datetime.timedelta(seconds=time_in_sec)
-        time_without_ms = time - datetime.timedelta(microseconds=time.microseconds)
-    """
-
-    """
-       def get_url(self):
-        api_key = "5b3ce3597851110001cf6248d62eca3e4d314dba96c2e5596a0f8074"
-
-        if not all([self.from_long, self.from_lat, self.to_long, self.to_lat]):  # If any is missing values (=None)
-            print("Mi ing geo-coordinates")
-            return None, None, None
-
-        search = f'api_key={api_key}&start={self.from_long},{self.from_lat}&end={self.to_long},{self.to_lat}'
-        base_url = 'https://api.openrouteservice.org/v2/directions/'
-        vehicles = ['driving-car', 'cycling-regular', 'cycling-electric']
-
-        return [requests.get(f"{base_url}{v}?" + search).json() for v in vehicles]
-    """
-    # def test_get_url(self):
-    #     with patch('travel.requests.get') as mocked_get:
-    #         mocked_get.return_value.ok = True
-    #         mocked_get.return_value.text = 'Success!'
-    #
-    #         url = self.get_url()
-    #         mocked_get.assert_called_with('https://api.openrouteservice.org/v2/directions/driving-car?api_key='
-    #         '5b3ce3597851110001cf6248d62eca3e4d314dba96c2e5596a0f8074&start=11.9381581,57.7183072&end='
-    #         '11.9948842,57.7104969')
-    #         self.assertEqual(url, 'Success!')
-    #
-    #         mocked_get.return_value.ok = False
-    #
-    #         url = self.get_url()
-    #         mocked_get.assert_called_with('https://api.openrouteservice.org/v2/directions/driving-car?api_key='
-    #                                       '5b3ce3597851110001cf6248d62eca3e4d314dba96c2e5596a0f8074&start=11.9381581,57.7183072&end='
-    #                                       '11.9948842,57.7104969')
-    #         self.assertEqual(url, 'Success!')
+        minutes = str(self.travel.sec_converter(60))
+        self.assertEqual(minutes, '0:01:00')
 
 
     """
-        def monthly_schedule(self, month):
-            response = requests.get(f'http://company.com/{self.last}/{month}')
-            if response.ok:
-                return response.text
-            else:
-                return 'Bad Request!'
-        
-        def test_monthly_schedule(self):
-        with patch('employee.requests.get') as mocked_get:
+        def print_map(from_lat, from_long, to_lat, to_long):
+        base_url = 'https://www.mapquestapi.com/staticmap/v5/map?start='
+        api_key = 'v2ndcyw0ByFQHDe5LEHCSbtCmvgcJ8cn'
+        response = requests.get(f'{base_url}{from_lat},{from_long}&end={to_lat},{to_long}&size=600,400@2x&key='
+                                f'{api_key}')
+        if response.ok:
+            return response.url
+        else:
+            return 'Bad Request!'
+    """
+
+
+    def test_print_map(self):
+        with patch('travel.requests.get') as mocked_get:
             mocked_get.return_value.ok = True
-            mocked_get.return_value.text = 'Success'
+            mocked_get.return_value.text = 'Success!'
+            self.travel.from_lat = '57.7183072'
+            self.travel.from_long = '11.9381581'
+            self.travel.to_lat = '57.7104969'
+            self.travel.to_long = '11.9948842'
+            url = self.travel.print_map(self.travel.from_lat, self.travel.from_long, self.travel.to_lat,
+                                        self.travel.to_long)
+            mocked_get.assert_called_with(f'https://www.mapquestapi.com/staticmap/v5/map?start={self.travel.from_lat},{self.travel.from_long}&end={self.travel.to_lat},{self.travel.to_long}&size=600,400@2x&key=v2ndcyw0ByFQHDe5LEHCSbtCmvgcJ8cn')
+            self.assertEqual(url, 'Success!')
 
-            schedule = self.emp_1.monthly_schedule('May')
-            mocked_get.assert_called_with('http://company.com/Schafer/May')
-            self.assertEqual(schedule, 'Success')
+    def test_get_url(self):
+        with patch('travel.requests.get') as mocked_get:
+            mocked_get.return_value.ok = True
+            mocked_get.return_value.text = 'Success!'
+            self.travel.from_lat = '57.7183072'
+            self.travel.from_long = '11.9381581'
+            self.travel.to_lat = '57.7104969'
+            self.travel.to_long = '11.9948842'
+            url = self.travel.get_url()
+            mocked_get.assert_called_with(f'https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf6248d62eca3e4d314dba96c2e5596a0f8074&start={self.travel.from_long},{self.travel.from_lat}&end={self.travel.to_long},{self.travel.to_lat}')
+            self.assertEqual(url, 'Success!')
 
             mocked_get.return_value.ok = False
 
-            schedule = self.emp_2.monthly_schedule('June')
-            mocked_get.assert_called_with('http://company.com/Smith/June')
-            self.assertEqual(schedule, 'Bad Response!')
-    """
+            url = self.travel.get_url()
+            mocked_get.assert_called_with(f'https://api.openrouteservice.org/v2/directions/cycling-regular?api_key=5b3ce3597851110001cf6248d62eca3e4d314dba96c2e5596a0f8074&start={self.travel.from_long},{self.travel.from_lat}&end={self.travel.to_long},{self.travel.to_lat}')
+            self.assertEqual(url, 'Bad Response!')
+
+
+
 
 
 if __name__ == '__main__':

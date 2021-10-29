@@ -47,7 +47,7 @@ class Statistics:
         return weeks, distances
 
     @staticmethod
-    def bar_plot(weeks, distances):  # If the user chooses weeks with a gap between,
+    def bar_plot(weeks, distances):  # If the user chooses weeks with a gap in between,
         # the x axe will show the weeks in the gap.
         ax = plt.figure().gca()
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
@@ -72,7 +72,7 @@ class Statistics:
         color_print('yellow', '\nThese are the three longest trips you have made:')
         count = 1
         for i in lengths[:3]:
-            print(f'{count}. {i} km')
+            print(f'{count}. {i:.3f} km')
             count += 1
 
     def saved_emissions(self):
@@ -84,7 +84,7 @@ class Statistics:
 
     @staticmethod
     def m_to_km(meter):
-        km = Decimal(meter / 1000).quantize(Decimal("1.000"))
+        km = meter / 1000
         return km
 
     @staticmethod
