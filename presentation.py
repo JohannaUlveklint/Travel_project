@@ -42,7 +42,7 @@ class Presentation:
                     statistics.compare_weeks()
                     input()
                 case "4":
-                    trips.print_trips()
+                    trips.print_trip()
                     input()
                 case "5":
                     color_print('cyan', 'Thank you for visiting us. Have a nice day and welcome back!')
