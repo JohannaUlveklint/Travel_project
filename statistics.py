@@ -1,6 +1,5 @@
 import json
 import datetime
-from decimal import Decimal
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 from terminal_color import color_print
@@ -24,10 +23,12 @@ class Statistics:
         distance = 0
 
         for line in data:
+            if week in data.values() is False:
+                print('No trips for that week has been saved.')
+                break
             if line['week'] == week:
                 meter += line['distance']
                 distance = self.m_to_km(meter)
-            # How do I check if logs from a certain week is missing?
 
         return week, distance
 
@@ -87,11 +88,11 @@ class Statistics:
         km = meter / 1000
         return km
 
-    @staticmethod
-    def sec_converter(time_in_sec):
-        time = datetime.timedelta(seconds=time_in_sec)
-        time_without_ms = time - datetime.timedelta(microseconds=time.microseconds)
-        return time_without_ms
+    # @staticmethod
+    # def sec_converter(time_in_sec):
+    #     time = datetime.timedelta(seconds=time_in_sec)
+    #     time_without_ms = time - datetime.timedelta(microseconds=time.microseconds)
+    #     return time_without_ms
 
     @staticmethod
     def load_file():

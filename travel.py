@@ -1,6 +1,5 @@
 import datetime
 import requests
-from decimal import Decimal
 from geopy.geocoders import Nominatim
 import clipboard
 from terminal_color import color_print
@@ -40,7 +39,6 @@ class Travel:
         base_url = 'https://api.openrouteservice.org/v2/directions/'
         vehicles = ['driving-car', 'cycling-regular', 'cycling-electric']
 
-        # Use something like this instead of return the comprehension directly?
         response = [requests.get(f"{base_url}{v}?" + search).json() for v in vehicles]
         for i in response:
             if not i.ok:
