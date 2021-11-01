@@ -65,7 +65,8 @@ class Trips:
         trip = {'year': year, 'month': month, 'day': day, 'week': week, 'distance': distance, 'duration': duration}
         self.save_to_json(trip)
 
-    def save_to_json(self, new_trip):
+    @staticmethod
+    def saved_trips():
         saved_trips = [f.replace('.json', '') for f in listdir('./saved_trips') if f.endswith('.json')]
         print("Saved trips:")
         if len(saved_trips) == 0:
@@ -73,6 +74,10 @@ class Trips:
         else:
             for trip in saved_trips:
                 color_print("yellow", f"\t{trip}")
+        return saved_trips
+
+    def save_to_json(self, new_trip):
+        saved_trips = self.saved_trips()
         file_name = input("Save your trip to an existing saved file or choose a new name: ")
 
         if file_name in saved_trips:
@@ -92,4 +97,30 @@ class Trips:
         color_print('yellow', 'Your trip is saved!')
 
     def print_trip(self):
-        pass
+        saved_trips = self.saved_trips()
+        file_name = input('Choose a saved file to print: ')
+        if file_name in saved_trips:
+            file_name += '.json'
+            with open('./saved_trips/' + file_name, 'r', encoding='utf-8') as file:
+                data = json.load(file)
+
+        # Sort function for year, month and day before printing?
+
+        total_distance = 0
+        print('====================')
+        for line in data:
+            total_distance += self.travel.m_to_km(line['distance'])
+            print(f"Date: {line['year']}-{line['month']}-{line['day']}")
+            print(f"Distance: {self.travel.m_to_km(line['distance']):.3f} km")
+            print(f"Duration: {self.travel.sec_converter(line['duration'])}\n")
+        print(f'Totally, you have gone {total_distance:.3f} km by bike, great work!')
+        print('======================================================')
+
+
+def main():
+    trip = Trips()
+    trip.print_trip()
+
+
+if __name__ == '__main__':
+    main()
