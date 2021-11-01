@@ -96,15 +96,13 @@ class Trips:
 
         color_print('yellow', 'Your trip is saved!')
 
-    def print_trip(self):
+    def print_trips(self):
         saved_trips = self.saved_trips()
         file_name = input('Choose a saved file to print: ')
         if file_name in saved_trips:
             file_name += '.json'
             with open('./saved_trips/' + file_name, 'r', encoding='utf-8') as file:
                 data = json.load(file)
-
-        # Sort function for year, month and day before printing?
 
         total_distance = 0
         print('====================')
@@ -119,7 +117,7 @@ class Trips:
 
 def main():
     trip = Trips()
-    trip.print_trip()
+    trip.print_trips()
 
 
 if __name__ == '__main__':
