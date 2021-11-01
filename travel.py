@@ -121,11 +121,32 @@ class Travel:
         km = meter / 1000
         return km
 
+    def get_forecast_data(self):
+        key = 'ab4bdc6adfd6dc3dbe1e9c8ee0b87537'
+        base = 'https://api.openweathermap.org/data/2.5/onecall?lat='
+        response = requests.get(f'{base}{self.from_lat}&lon={self.from_long}&exclude=minutely,hourly,alerts&units='
+                                f'metric&appid={key}')
+        if response.ok:
+            return response.text, response.url
+        else:
+            return 'Bad Request!'
+
+    @staticmethod
+    def deg_to_compass(num):
+        val = int(num / 45)
+        arr = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
+        return arr[(val % 8)]
+
 
 def main():
     travel = Travel()
-    minutes = travel.sec_converter(60)
-    print(minutes)
+    # travel.get_lat_and_long()
+    # text = travel.get_forecast()[0]
+    # url = travel.get_forecast()[1]
+    # print(text)
+    # print(url)
+
+    print(travel.deg_to_compass(350))
 
 
 if __name__ == '__main__':
