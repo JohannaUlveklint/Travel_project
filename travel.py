@@ -1,4 +1,6 @@
 import datetime
+import json
+
 import requests
 from geopy.geocoders import Nominatim
 import clipboard
@@ -28,7 +30,7 @@ class Travel:
         self.to_long = str(to_location.longitude)
         return self.from_lat, self.from_long, self.to_lat, self.to_long
 
-    def get_url(self):
+    def get_url(self):  # Change name?
         api_key = "5b3ce3597851110001cf6248d62eca3e4d314dba96c2e5596a0f8074"
 
         if not all([self.from_long, self.from_lat, self.to_long, self.to_lat]):  # If any is missing values (=None)
@@ -39,10 +41,11 @@ class Travel:
         base_url = 'https://api.openrouteservice.org/v2/directions/'
         vehicles = ['driving-car', 'cycling-regular', 'cycling-electric']
 
-        response = [requests.get(f"{base_url}{v}?" + search).json() for v in vehicles]
+        response = [requests.get(f"{base_url}{v}?" + search) for v in vehicles]
         for i in response:
             if not i.ok:
-                return 'Bad Response!'
+                return 'Bad Request!'
+        response = [line.json() for line in response]
         return response
 
     def get_distance_and_duration(self):
@@ -66,6 +69,9 @@ class Travel:
 
         clipboard.copy(map_url)
         print('Please open a web browser and enter Ctrl + V to see your trip on a map!')
+        input()
+
+        self.print_forecast_data()
         input()
 
         color_print('red', 'Car:')
@@ -124,12 +130,19 @@ class Travel:
     def get_forecast_data(self):
         key = 'ab4bdc6adfd6dc3dbe1e9c8ee0b87537'
         base = 'https://api.openweathermap.org/data/2.5/onecall?lat='
-        response = requests.get(f'{base}{self.from_lat}&lon={self.from_long}&exclude=minutely,hourly,alerts&units='
-                                f'metric&appid={key}')
+        response = requests.get(f'{base}{self.from_lat}&lon={self.from_long}&exclude=minutely,hourly,alerts&units=metric&appid={key}')
         if response.ok:
-            return response.text, response.url
+            return response.json()
         else:
-            return 'Bad Request!'
+            return 'Bad Request! No weather forecast was found.'
+
+    def print_forecast_data(self):
+        data = self.get_forecast_data()
+        color_print('blue', 'Current weather:')
+        print(f"Type: {data['current']['weather'][0]['description']}")
+        print(f"Degrees: {data['current']['temp']} °C")
+        print(f"Wind: {self.deg_to_compass(data['current']['wind_deg'])} {data['current']['wind_speed']} m/s")
+        print(f"Expected rain today: {data['daily'][0]['rain']} mm")
 
     @staticmethod
     def deg_to_compass(num):
@@ -140,13 +153,15 @@ class Travel:
 
 def main():
     travel = Travel()
-    # travel.get_lat_and_long()
-    # text = travel.get_forecast()[0]
-    # url = travel.get_forecast()[1]
-    # print(text)
-    # print(url)
-
-    print(travel.deg_to_compass(350))
+    travel.get_lat_and_long()
+    print(travel.deg_to_compass(5))
+    print(travel.deg_to_compass(50))
+    print(travel.deg_to_compass(95))
+    print(travel.deg_to_compass(140))
+    print(travel.deg_to_compass(185))
+    print(travel.deg_to_compass(230))
+    print(travel.deg_to_compass(275))
+    print(travel.deg_to_compass(320))
 
 
 if __name__ == '__main__':
