@@ -13,6 +13,11 @@ class Trips:
 
     @staticmethod
     def __get_user_input(question):
+        """
+        Called by log_trip(). Controls that the user has entered a valid value.
+        :param question: int
+        :return: user_input (int)
+        """
         user_input = 0
         while True:
             color_print('green', question)
@@ -29,11 +34,16 @@ class Trips:
         return user_input
 
     def log_trip(self):
+        """
+        Called by run() case 2 in presentation.py. User enters date, starting location and end location and the data
+        is saved as a dict in saved_trips.
+        :return: None
+        """
         running = True
         year = None
         month = None
         day = None
-        cd, rbd, ebd, cdu, rbdu, ebdu, map_url = self.travel.get_distance_and_duration()
+        cd, rbd, ebd, cdu, rbdu, ebdu = self.travel.get_distance_and_duration()
 
         while running:
             year = self.__get_user_input('\nEnter year with four digits: ')
@@ -67,16 +77,27 @@ class Trips:
 
     @staticmethod
     def saved_trips():
+        """
+        Called by load_file() in statistics.py, print_trips() and save_to_json(). Lists the saved files.
+        :return: saved_trips (list)
+        """
         saved_trips = [f.replace('.json', '') for f in listdir('./saved_trips') if f.endswith('.json')]
+
         print("Saved trips:")
         if len(saved_trips) == 0:
             print('There is no saved trips')
         else:
             for trip in saved_trips:
                 color_print("yellow", f"\t{trip}")
+
         return saved_trips
 
     def save_to_json(self, new_trip):
+        """
+        Called by log_trip(). Updates a saved file or creates a new file in ./saved_trips.
+        :param new_trip: dict
+        :return: None
+        """
         saved_trips = self.saved_trips()
         file_name = input("Save your trip to an existing saved file or choose a new name: ")
 
@@ -87,18 +108,24 @@ class Trips:
             data.append(new_trip)
             with open('./saved_trips/' + file_name, 'w', encoding='utf-8') as file:
                 json.dump(data, file)
+            color_print('yellow', 'Your saved file is updated!')
+
         else:
             file_name += '.json'
             data = self.logged_trips
             data.append(new_trip)
             with open('./saved_trips/' + file_name, 'w', encoding='utf-8') as file:
                 json.dump(data, file)
-
-        color_print('yellow', 'Your trip is saved!')
+            color_print('yellow', 'Your trip is saved!')
 
     def print_trips(self):
+        """
+        Called by run() case 4 in presentation.py. Prints each trip in a saved file.
+        :return: None
+        """
         saved_trips = self.saved_trips()
         file_name = input('Choose a saved file to print: ')
+
         if file_name in saved_trips:
             file_name += '.json'
             with open('./saved_trips/' + file_name, 'r', encoding='utf-8') as file:
@@ -111,6 +138,7 @@ class Trips:
             print(f"Date: {line['year']}-{line['month']}-{line['day']}")
             print(f"Distance: {self.travel.m_to_km(line['distance']):.3f} km")
             print(f"Duration: {self.travel.sec_converter(line['duration'])}\n")
+
         print(f'Totally, you have gone {total_distance:.3f} km by bike, great work!')
         print('======================================================')
 

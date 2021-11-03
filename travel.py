@@ -15,6 +15,10 @@ class Travel:
         self.to_long = to_longitude
 
     def get_lat_and_long(self):
+        """
+        Called by get_distance_and_duration(). Gets latitude and longitude for chosen addresses using Nominatim.
+        :return: self.from_lat, self.from_long, self.to_lat, self.to_long
+        """
         geolocator = Nominatim(user_agent="my_application", timeout=15)
         # from_address = input('Enter <street> <street number> <city> of your start destination: ')
         from_address = 'Övre Hallegatan 50 Göteborg'
@@ -28,9 +32,15 @@ class Travel:
         to_location = geolocator.geocode(to_address)
         self.to_lat = str(to_location.latitude)
         self.to_long = str(to_location.longitude)
+
         return self.from_lat, self.from_long, self.to_lat, self.to_long
 
-    def get_url(self):  # Change name?
+    def get_route(self):  # Change name?
+        """
+        Called by get_distance_and_duration(). Using Open Route Service API to get routes between a and b by car,
+        regular bike and electric bike.
+        :return: list with json-files
+        """
         api_key = "5b3ce3597851110001cf6248d62eca3e4d314dba96c2e5596a0f8074"
 
         if not all([self.from_long, self.from_lat, self.to_long, self.to_lat]):  # If any is missing values (=None)
@@ -49,24 +59,34 @@ class Travel:
         return response
 
     def get_distance_and_duration(self):
+        """
+        Called by print_route_data(). Reads distance and duration from json-file for chosen route by car,
+        regular bike and electric bike.
+        :return: car_distance, reg_bike_distance, elect_bike_distance, car_duration, reg_bike_duration, elect_bike_duration
+        """
         self.get_lat_and_long()
-        car_url, reg_bike_url, elect_bike_url = self.get_url()
+        car_route, reg_bike_route, elect_bike_route = self.get_route()
         # Make as loop?
-        car_distance = car_url['features'][0]['properties']['segments'][0]['distance']
-        reg_bike_distance = reg_bike_url['features'][0]['properties']['segments'][0]['distance']
-        elect_bike_distance = elect_bike_url['features'][0]['properties']['segments'][0]['distance']
+        car_distance = car_route['features'][0]['properties']['segments'][0]['distance']
+        reg_bike_distance = reg_bike_route['features'][0]['properties']['segments'][0]['distance']
+        elect_bike_distance = elect_bike_route['features'][0]['properties']['segments'][0]['distance']
 
-        car_duration = car_url['features'][0]['properties']['segments'][0]['duration']
-        reg_bike_duration = reg_bike_url['features'][0]['properties']['segments'][0]['duration']
-        elect_bike_duration = elect_bike_url['features'][0]['properties']['segments'][0]['duration']
+        car_duration = car_route['features'][0]['properties']['segments'][0]['duration']
+        reg_bike_duration = reg_bike_route['features'][0]['properties']['segments'][0]['duration']
+        elect_bike_duration = elect_bike_route['features'][0]['properties']['segments'][0]['duration']
 
-        map_url = self.print_map(self.from_lat, self.from_long, self.to_lat, self.to_long)
-        return car_distance, reg_bike_distance, elect_bike_distance, car_duration, reg_bike_duration, \
-               elect_bike_duration, map_url
+        return car_distance, reg_bike_distance, elect_bike_distance, car_duration, reg_bike_duration, elect_bike_duration
 
-    def print_distance_and_duration(self):
-        cd, rbd, ebd, cdu, rbdu, ebdu, map_url = self.get_distance_and_duration()
+    def print_route_data(self):
+        """
+        Called by run() case 1 in presentation.py. Shows map of route (by car), a weather forecast and the distance and
+        duration for the route made by car, regular bike and electric bike. Prints the differences in duration and CO2
+        emissions if going by car.
+        :return: ?
+        """
+        cd, rbd, ebd, cdu, rbdu, ebdu = self.get_distance_and_duration()
 
+        map_url = self.get_map(self.from_lat, self.from_long, self.to_lat, self.to_long)
         clipboard.copy(map_url)
         print('Please open a web browser and enter Ctrl + V to see your trip on a map!')
         input()
@@ -103,10 +123,18 @@ class Travel:
         color_print('magenta', '\033[1m' + 'So Whats __init__ For You?' + '\033[0m' + ' A stronger body, more spare '
                     'time and a super hero cape. The choice is yours.')
 
-        return cd, rbd, ebd, cdu, rbdu, ebdu
+        return cd, rbd, ebd, cdu, rbdu, ebdu  # Shall I return anything?
 
     @staticmethod
-    def print_map(from_lat, from_long, to_lat, to_long):
+    def get_map(from_lat, from_long, to_lat, to_long):
+        """
+        Called by get_distance_and_duration(). Gets a url for a map with the route made by car.
+        :param from_lat: float
+        :param from_long: float
+        :param to_lat: float
+        :param to_long: float
+        :return: response.url or 'Bad Request!'
+        """
         base_url = 'https://www.mapquestapi.com/staticmap/v5/map?start='
         api_key = 'v2ndcyw0ByFQHDe5LEHCSbtCmvgcJ8cn'
         response = requests.get(f'{base_url}{from_lat},{from_long}&end={to_lat},{to_long}&size=600,400@2x&key='
@@ -128,6 +156,10 @@ class Travel:
         return km
 
     def get_forecast_data(self):
+        """
+        Called by print_forecast_data(). Get current weather and a forecast with Open Weather Map API.
+        :return: response.json or 'Bad Request!'
+        """
         key = 'ab4bdc6adfd6dc3dbe1e9c8ee0b87537'
         base = 'https://api.openweathermap.org/data/2.5/onecall?lat='
         response = requests.get(f'{base}{self.from_lat}&lon={self.from_long}&exclude=minutely,hourly,alerts&units=metric&appid={key}')
@@ -137,6 +169,10 @@ class Travel:
             return 'Bad Request! No weather forecast was found.'
 
     def print_forecast_data(self):
+        """
+        Called by print_route_data(). Prints weather and expected precipitation (rain) for current day.
+        :return: None
+        """
         data = self.get_forecast_data()
         color_print('blue', 'Current weather:')
         print(f"Type: {data['current']['weather'][0]['description']}")
@@ -146,6 +182,11 @@ class Travel:
 
     @staticmethod
     def deg_to_compass(num):
+        """
+        Called by print_forecast_data(). Translate wind degrees into compass points.
+        :param num: int
+        :return: compass point (string)
+        """
         val = int(num / 45)
         arr = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
         return arr[(val % 8)]

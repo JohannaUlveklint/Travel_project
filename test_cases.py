@@ -1,5 +1,6 @@
 import datetime
 import json
+import os
 import unittest
 from unittest.mock import patch, mock_open, call, Mock
 
@@ -36,10 +37,15 @@ class TestTravel(unittest.TestCase):
                 "distance": 5316.2,
                 "duration": 1066.4
             }]
-        sample_json = json.dump(sample_json, ensure_ascii=False)
-        path = '/saved_trips/'
-        filename = 'just_for_unit_tests.json'
-        self.assertEqual(trips.save_to_json(filename, path), sample_json)
+        saved = self.trips.save_to_json(sample_json)
+        loaded = self.statistics.load_file()
+        self.assertEqual(saved, loaded)
+        os.remove(saved)
+
+        # 1. Save sample_jason to a new file
+        # 2. Load the file
+        # 3. Compare the loaded file with the saved
+        # 4. os.remove on the test file (deletes the test file)
 
     """
         def saved_emissions(self):
@@ -74,11 +80,11 @@ class TestTravel(unittest.TestCase):
     def test_print_map(self):
         with patch('travel.requests.get') as mocked_get:
             mocked_get.return_value.ok = True
-            mocked_get.return_value.url = 'Success!'
+            mocked_get.return_value.text = 'Success!'
 
             self.get_coordinates()
-            url = self.travel.print_map(self.travel.from_lat, self.travel.from_long, self.travel.to_lat,
-                                        self.travel.to_long)
+            url = self.travel.get_map(self.travel.from_lat, self.travel.from_long, self.travel.to_lat,
+                                      self.travel.to_long)
             mocked_get.assert_called_with(f'https://www.mapquestapi.com/staticmap/v5/map?start={self.travel.from_lat},{self.travel.from_long}&end={self.travel.to_lat},{self.travel.to_long}&size=600,400@2x&key=v2ndcyw0ByFQHDe5LEHCSbtCmvgcJ8cn')
             self.assertEqual(url, 'Success!')
 
@@ -95,7 +101,7 @@ class TestTravel(unittest.TestCase):
             mocked_get.return_value.text = 'Bad Request!'
 
             self.get_coordinates()
-            url = self.travel.get_url()
+            url = self.travel.get_route()
             mocked_get.assert_called_with(f'https://api.openrouteservice.org/v2/directions/cycling-electric?api_key=5b3ce3597851110001cf6248d62eca3e4d314dba96c2e5596a0f8074&start={self.travel.from_long},{self.travel.from_lat}&end={self.travel.to_long},{self.travel.to_lat}')
             self.assertEqual(url, 'Bad Request!')
 

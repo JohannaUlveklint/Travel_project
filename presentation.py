@@ -30,7 +30,7 @@ class Presentation:
 
             match user_input:
                 case "1":
-                    travel.print_distance_and_duration()
+                    travel.print_route_data()
                     input()
                 case "2":
                     trips.log_trip()
