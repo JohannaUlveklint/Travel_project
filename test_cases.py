@@ -29,23 +29,19 @@ class TestTravel(unittest.TestCase):
         self.assertEqual(compass_point, 'W')
 
     def test_save_to_json(self):
-        sample_json = [{
+        sample_json = {
                 "year": 2021,
                 "month": 5,
                 "day": 3,
                 "week": 18,
                 "distance": 5316.2,
                 "duration": 1066.4
-            }]
-        saved = self.trips.save_to_json(sample_json)
-        loaded = self.statistics.load_file()
-        self.assertEqual(saved, loaded)
-        os.remove(saved)
-
-        # 1. Save sample_jason to a new file
-        # 2. Load the file
-        # 3. Compare the loaded file with the saved
-        # 4. os.remove on the test file (deletes the test file)
+            }
+        with patch('builtins.input', return_value='test_data'):  # Mocks input in save_to_json()
+            self.trips.save_to_json(sample_json)
+            loaded = self.statistics.load_file()
+        self.assertEqual([sample_json], loaded)
+        os.remove('saved_trips/test_data.json')
 
     """
         def saved_emissions(self):
@@ -55,32 +51,11 @@ class TestTravel(unittest.TestCase):
             emissions += round((self.m_to_km(line['distance'] * 0.12)), 2)
         color_print('yellow', f'\nBy making all your trips by bike you have saved {emissions} kg CO2 equivalents!')
     """
-    """
-    https://stackoverflow.com/questions/1289894/how-do-i-mock-an-open-used-in-a-with-statement-using-the-mock-framework-in-pyth
-    test.py
-
-    import unittest
-    from mock import Mock, patch, mock_open
-    from MyObj import MyObj
-    
-    class TestObj(unittest.TestCase):
-        open_ = mock_open()
-        with patch.object(__builtin__, "open", open_):
-            ref = MyObj()
-            ref.save("myfile.txt")
-        assert open_.call_args_list == [call("myfile.txt", "wb")]
-    MyObj.py
-    
-    class MyObj(object):
-        def save(self, filename):
-            with open(filename, "wb") as f:
-                f.write("sample text")
-    """
 
     def test_print_map(self):
         with patch('travel.requests.get') as mocked_get:
             mocked_get.return_value.ok = True
-            mocked_get.return_value.text = 'Success!'
+            mocked_get.return_value.url = 'Success!'
 
             self.get_coordinates()
             url = self.travel.get_map(self.travel.from_lat, self.travel.from_long, self.travel.to_lat,
