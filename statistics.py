@@ -110,16 +110,29 @@ class Statistics:
 
         weeks = week_durations.keys()
         durations = [(duration / 60) for duration in week_durations.values()]
-        color_print('magenta', 'WHO recommends a minimum of 150 minutes physical activity/week on a moderate level or higher.')
-        color_print('magenta', 'Do you think your bike trips helped you towards that recommendation?')
+        color_print('blue', 'WHO recommends a minimum of 150 minutes physical activity/week on a moderate level or higher.')
+        color_print('blue', 'Do you think your bike trips helped you towards that recommendation?')
         input()
         self.bar_plot_duration(weeks, durations)
+
+        # if min(lst) > a and max(lst) < b:
+        if max(durations) <= 30:
+            color_print('magenta', 'All trips made by bike are better than not taking the bike at all!')
+        elif min(durations) > 30 and max(durations) < 100:
+            color_print('magenta', 'This is a good start. Just choose the bike a little more often and you are there!')
+        elif min(durations) >= 100 and max(durations) < 150:
+            color_print('magenta', 'So close! It is just a small extra effort and you will reach the line!')
+        elif min(durations) >= 150:
+            color_print('magenta', "You've nailed it!")
+        if max(durations) > 300:
+            color_print('magenta', 'Look at that week: 2 * WHO!')
+        if max(durations) > 600:
+            color_print('magenta', 'Just like Armstrong, only not on steroids.')
         input()
-        print("Let's look att your distance vs duration!")
+        color_print('cyan', "Let's look att your distance vs duration!")
         input()
         self.scatter_plot()
 
-        # Print out different messages depending on how far the user has gone?
 
         return weeks, distances, durations  # Should I return any value?
 
