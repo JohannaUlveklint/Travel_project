@@ -83,7 +83,20 @@ class Statistics:
 
         week_numbers = {}
         for i in range(num_of_weeks):
-            week_numbers[i] = int(input(f'Type week {i + 1}: '))
+            running = True
+            while running:
+                week_input = input(f'Type week {i + 1}: ')
+                if week_input.isdigit():
+                    if int(week_input) in logged_weeks:
+                        week_numbers[i] = int(week_input)
+                        running = False
+                    else:
+                        print('You have logged trips from these weeks:')
+                        for week in logged_weeks:
+                            color_print('green', week)
+                        print('Try again.')
+                else:
+                    print('Please enter a valid number.')
 
         week_distances = {}  # Comprehension?
         for i in week_numbers.values():
@@ -91,6 +104,8 @@ class Statistics:
 
         weeks = week_distances.keys()
         distances = week_distances.values()
+        print('Let us check how far you have gone!')
+        input()
         self.bar_plot_distance(weeks, distances)
         input()
 
@@ -100,7 +115,12 @@ class Statistics:
 
         weeks = week_durations.keys()
         durations = [(duration / 60) for duration in week_durations.values()]
+        color_print('magenta', 'WHO recommends a minimum of 150 minutes physical activity on a moderate level or higher.')
+        color_print('magenta', 'Do you think your bike trips helped you towards that recommendation?')
+        input()
         self.bar_plot_duration(weeks, durations)
+
+        # Print out different messages depending on how far the user has gone?
 
         return weeks, distances, durations  # Should I return any value?
 
@@ -137,9 +157,10 @@ class Statistics:
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
         plt.xlim((min(weeks))-0.5, (max(weeks))+0.5)
 
+        # If I want to continue working on separate colors below and above threshold:
         # x = range(len(durations))
-        # above_threshold = np.maximum(durations - threshold, 0)
-        # below_threshold = np.minimum(durations, threshold)
+        # above_threshold = np.maximum(max(durations) - threshold, 0)
+        # below_threshold = np.minimum(min(durations), threshold)
         #
         # fig, ax = plt.subplots()
         # ax.bar(x, below_threshold, 0.35, color="g")
