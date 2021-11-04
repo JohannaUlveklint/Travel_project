@@ -137,8 +137,9 @@ class Statistics:
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
         ax.plot([0., 4.5], [threshold, threshold], "k--")
 
-        xint = range(min(weeks), max(weeks) + 1)
-        matplotlib.pyplot.xticks(xint)
+        # xint = range(min(weeks), max(weeks) + 1)
+        # matplotlib.pyplot.xticks(xint)
+        plt.xlim((min(weeks))-0.5, (max(weeks))+0.5)
 
         plt.title('Bike Trip Durations Bar Plot for Chosen Weeks')
         plt.xlabel('Weeks')
