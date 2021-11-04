@@ -1,5 +1,8 @@
 import json
 import datetime
+import math
+
+import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 
@@ -23,12 +26,7 @@ class Statistics:
         meter = 0
         distance = 0
 
-        # Print which weeks are in the file
-
         for line in self.data:
-            if week in self.data[0].values() is False:  # AttributeError: 'list' object has no attribute 'values'
-                print('No trips for that week has been saved.')
-                break
             if line['week'] == week:
                 meter += line['distance']
                 distance = self.m_to_km(meter)
@@ -49,9 +47,6 @@ class Statistics:
         # Print which weeks are in the file
 
         for line in self.data:
-            if week in self.data[0].values() is False:  # AttributeError: 'list' object has no attribute 'values'
-                print('No trips for that week has been saved.')
-                break
             if line['week'] == week:
                 seconds += line['duration']
                 # duration = self.travel.sec_converter(seconds)
@@ -64,8 +59,28 @@ class Statistics:
         the result in a bar plot.
         :return: ?
         """
+        # global num_of_weeks
         color_print('yellow', "\nLet's compare the distances you have cycled on a week to week basis!")
-        num_of_weeks = int(input('How many weeks do you want to compare? '))
+
+        logged_weeks = {line['week'] for line in self.data}
+        print('You have logged trips from these weeks:')
+        for i in logged_weeks:
+            color_print('green', i)
+
+        running = True
+        while running:
+            num_of_weeks = input('\nHow many weeks do you want to compare? ')
+            if not num_of_weeks.isdigit():
+                color_print('red', f'Please choose an integer value between 1 and {len(logged_weeks)}.')
+            else:
+                num_of_weeks = int(num_of_weeks)
+                if 0 < num_of_weeks <= len(logged_weeks):
+                    running = False
+                elif num_of_weeks > len(logged_weeks):
+                    color_print('red', f'You have only saved trips from {len(logged_weeks)} weeks.')
+                elif num_of_weeks <= 0:
+                    color_print('red', 'You have to choose at least one week.')
+
         week_numbers = {}
         for i in range(num_of_weeks):
             week_numbers[i] = int(input(f'Type week {i + 1}: '))
@@ -84,9 +99,7 @@ class Statistics:
             week_durations[i] = self.calc_weekly_duration(i)
 
         weeks = week_durations.keys()
-        durations = list(week_durations.values())
-        for i in range(len(durations)):
-            durations[i] = self.travel.sec_converter(i)
+        durations = [(duration / 60) for duration in week_durations.values()]
         self.bar_plot_duration(weeks, durations)
 
         return weeks, distances, durations  # Should I return any value?
@@ -101,7 +114,8 @@ class Statistics:
         :return: None
         """
         ax = plt.figure().gca()
-        ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+        # ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+        ax.xaxis.get_major_locator().set_params(integer=True)
 
         plt.title('Bike Distance Bar Plot for Chosen Weeks')
         plt.xlabel('Weeks')
@@ -122,6 +136,9 @@ class Statistics:
         ax = plt.figure().gca()
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
         ax.plot([0., 4.5], [threshold, threshold], "k--")
+
+        xint = range(min(weeks), max(weeks) + 1)
+        matplotlib.pyplot.xticks(xint)
 
         plt.title('Bike Trip Durations Bar Plot for Chosen Weeks')
         plt.xlabel('Weeks')
@@ -163,7 +180,7 @@ class Statistics:
         lengths = [self.m_to_km(line['distance']) for line in self.data]
         lengths.sort(reverse=True)
 
-        color_print('yellow', '\nThese are the three longest trips you have made:')
+        color_print('magenta', '\nThese are the three longest trips you have made:')
         count = 1
         for i in lengths[:3]:
             print(f'{count}. {i:.3f} km')
@@ -180,7 +197,7 @@ class Statistics:
         for line in self.data:
             emissions += round((self.m_to_km(line['distance'] * 0.12)), 2)
 
-        color_print('yellow', f'\nBy making all your trips by bike you have saved {emissions} kg CO2 equivalents!')
+        color_print('cyan', f'\nBy making all your trips by bike you have saved {emissions} kg CO2 equivalents!')
         return emissions
 
     @staticmethod
@@ -210,9 +227,5 @@ class Statistics:
         return data
 
     """
-    Aerob fysisk aktivitet enligt rådande rekommendationer: Regelbunden aerob fysisk
-    aktivitet (150 minuter per vecka med minst måttlig intensitet) påverkar
-    skelettmuskulatur, hjärta, blodkärl och kroppssammansättning positivt, och har i
-    metaanalyser visat sig vara förenat med cirka 20 procent lägre risk för förtida död. 
-    Jämfört med att sitta stilla 
+    20% lower risk for premature death with 150 minutes of physical activity/week on a least moderate level.
     """

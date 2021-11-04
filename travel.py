@@ -34,7 +34,7 @@ class Travel:
 
         return self.from_lat, self.from_long, self.to_lat, self.to_long
 
-    def get_route(self):  # Change name?
+    def get_route(self):
         """
         Called by get_distance_and_duration(). Using Open Route Service API to get routes between a and b by car,
         regular bike and electric bike.
@@ -170,7 +170,8 @@ class Travel:
 
     def print_forecast_data(self):
         """
-        Called by print_route_data(). Prints weather and expected precipitation (rain) for current day.
+        Called by print_route_data(). Prints weather and expected precipitation (rain) for current day. If it is no rain
+        expected in today's forecast the ['rain']-post is let out and raises an exception which has to be handled for.
         :return: None
         """
         data = self.get_forecast_data()
