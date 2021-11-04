@@ -100,40 +100,14 @@ class Statistics:
         :param distances: float
         :return: None
         """
-        # threshold = 150
         ax = plt.figure().gca()
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
-        # ax.plot([0., 4.5], [threshold, threshold], "k--")
 
         plt.title('Bike Distance Bar Plot for Chosen Weeks')
         plt.xlabel('Weeks')
         plt.ylabel('Distance in km')
         plt.bar(weeks, distances)
         plt.show()
-        """
-        import numpy as np
-        import matplotlib.pyplot as plt
-        
-        # some example data
-        threshold = 43.0
-        values = np.array([30., 87.3, 99.9, 3.33, 50.0])
-        x = range(len(values))
-        
-        # split it up
-        above_threshold = np.maximum(values - threshold, 0)
-        below_threshold = np.minimum(values, threshold)
-        
-        # and plot it
-        fig, ax = plt.subplots()
-        ax.bar(x, below_threshold, 0.35, color="g")
-        ax.bar(x, above_threshold, 0.35, color="r",
-                bottom=below_threshold)
-        
-        # horizontal line indicating the threshold
-        ax.plot([0., 4.5], [threshold, threshold], "k--")
-        
-        fig.savefig("look-ma_a-threshold-plot.png")
-        """
 
     @staticmethod
     def bar_plot_duration(weeks, durations):  # If the user chooses weeks with a gap in between,
@@ -155,29 +129,29 @@ class Statistics:
         plt.bar(weeks, durations)
         plt.show()
         """
-        import numpy as np
-        import matplotlib.pyplot as plt
+          import numpy as np
+          import matplotlib.pyplot as plt
 
-        # some example data
-        threshold = 43.0
-        values = np.array([30., 87.3, 99.9, 3.33, 50.0])
-        x = range(len(values))
+          # some example data
+          threshold = 43.0
+          values = np.array([30., 87.3, 99.9, 3.33, 50.0])
+          x = range(len(values))
 
-        # split it up
-        above_threshold = np.maximum(values - threshold, 0)
-        below_threshold = np.minimum(values, threshold)
+          # split it up
+          above_threshold = np.maximum(values - threshold, 0)
+          below_threshold = np.minimum(values, threshold)
 
-        # and plot it
-        fig, ax = plt.subplots()
-        ax.bar(x, below_threshold, 0.35, color="g")
-        ax.bar(x, above_threshold, 0.35, color="r",
-                bottom=below_threshold)
+          # and plot it
+          fig, ax = plt.subplots()
+          ax.bar(x, below_threshold, 0.35, color="g")
+          ax.bar(x, above_threshold, 0.35, color="r",
+                  bottom=below_threshold)
 
-        # horizontal line indicating the threshold
-        ax.plot([0., 4.5], [threshold, threshold], "k--")
+          # horizontal line indicating the threshold
+          ax.plot([0., 4.5], [threshold, threshold], "k--")
 
-        fig.savefig("look-ma_a-threshold-plot.png")
-        """
+          fig.savefig("look-ma_a-threshold-plot.png")
+          """
 
     def three_longest_trips(self):
         """
