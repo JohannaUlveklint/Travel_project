@@ -43,14 +43,10 @@ class TestTravel(unittest.TestCase):
         self.assertEqual([sample_json], loaded)
         os.remove('saved_trips/test_data.json')
 
-    """
-        def saved_emissions(self):
-        data = self.load_file()
-        emissions = 0
-        for line in data:
-            emissions += round((self.m_to_km(line['distance'] * 0.12)), 2)
-        color_print('yellow', f'\nBy making all your trips by bike you have saved {emissions} kg CO2 equivalents!')
-    """
+    def test_saved_emissions(self):
+        with patch('builtins.input', return_value='test_statistics'):
+            emissions = str(self.statistics.saved_emissions())
+        self.assertEqual(emissions, '26.2')
 
     def test_print_map(self):
         with patch('travel.requests.get') as mocked_get:

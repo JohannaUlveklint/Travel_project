@@ -20,15 +20,14 @@ class Travel:
         :return: self.from_lat, self.from_long, self.to_lat, self.to_long
         """
         geolocator = Nominatim(user_agent="my_application", timeout=15)
-        # from_address = input('Enter <street> <street number> <city> of your start destination: ')
-        from_address = 'Övre Hallegatan 50 Göteborg'
-        # address = input('green', 'Enter <street> <street number> <city>')
+        from_address = input('Enter <street> <street number> <city> of your start destination: ')
+        # from_address = 'Övre Hallegatan 50 Göteborg'
         from_location = geolocator.geocode(from_address)
         self.from_lat = str(from_location.latitude)
         self.from_long = str(from_location.longitude)
 
-        # to_address = input('Enter <street> <street number> <city> of your end destination: ')
-        to_address = 'Anders Personsgatan 14 Göteborg'
+        to_address = input('Enter <street> <street number> <city> of your end destination: ')
+        # to_address = 'Anders Personsgatan 14 Göteborg'
         to_location = geolocator.geocode(to_address)
         self.to_lat = str(to_location.latitude)
         self.to_long = str(to_location.longitude)
@@ -92,7 +91,7 @@ class Travel:
         input()
 
         self.print_forecast_data()
-        input()
+        # input()
 
         color_print('red', 'Car:')
         print('====')
@@ -106,9 +105,10 @@ class Travel:
         print('==============================')
 
         # Change bold to colors?
-        print(f'If you go this trip by bike it will actually only take '
-              f'' + '\033[1m' + f'{self.sec_converter(rbdu) - self.sec_converter(cdu)} minutes' + '\033[0m' + ' more. '
-              'Or ' + '\033[1m' + f'{self.sec_converter(ebdu) - self.sec_converter(cdu)} minutes ' + '\033[0m' +
+        print(f'If you go this trip by bike you only would have to add '
+              f'' + '\033[1m' + f'{self.sec_converter(rbdu) - self.sec_converter(cdu)}' + '\033[0m' + ' to your travel '
+              'time. '
+              'Or ' + '\033[1m' + f'{self.sec_converter(ebdu) - self.sec_converter(cdu)} ' + '\033[0m' +
               'if you are electric. :)')
         print('Furthermore, extra time for rush hour traffic and finding a parking lot should be accounted for when '
               'calculating total travel time by car.')
@@ -178,7 +178,10 @@ class Travel:
         print(f"Type: {data['current']['weather'][0]['description']}")
         print(f"Degrees: {data['current']['temp']} °C")
         print(f"Wind: {self.deg_to_compass(data['current']['wind_deg'])} {data['current']['wind_speed']} m/s")
-        print(f"Expected rain today: {data['daily'][0]['rain']} mm")
+        if 'rain' in data['daily'][0]:
+            print(f"Expected rain today: {data['daily'][0]['rain']} mm")
+        else:
+            print("No expected rain in today's forecast.")
 
     @staticmethod
     def deg_to_compass(num):
@@ -190,20 +193,3 @@ class Travel:
         val = int(num / 45)
         arr = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
         return arr[(val % 8)]
-
-
-def main():
-    travel = Travel()
-    travel.get_lat_and_long()
-    print(travel.deg_to_compass(5))
-    print(travel.deg_to_compass(50))
-    print(travel.deg_to_compass(95))
-    print(travel.deg_to_compass(140))
-    print(travel.deg_to_compass(185))
-    print(travel.deg_to_compass(230))
-    print(travel.deg_to_compass(275))
-    print(travel.deg_to_compass(320))
-
-
-if __name__ == '__main__':
-    main()

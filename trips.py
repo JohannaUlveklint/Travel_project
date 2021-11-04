@@ -61,7 +61,7 @@ class Trips:
                 continue
         week = datetime.date(year, month, day).isocalendar().week
 
-        bike_type = input('Are you riding a [r]egular or [e]lectric bike? Choose [e] if you are a fast biker.')
+        bike_type = input('Are you riding a [r]egular or [e]lectric bike? Choose [e] if you are a fast biker. ')
         while True:
             if bike_type.lower() == 'r':
                 distance, duration = rbd, rbdu
@@ -142,11 +142,3 @@ class Trips:
         print(f'Totally, you have gone {total_distance:.3f} km by bike, great work!')
         print('======================================================')
 
-
-def main():
-    trip = Trips()
-    trip.print_trips()
-
-
-if __name__ == '__main__':
-    main()
