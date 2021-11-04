@@ -4,33 +4,29 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 
 from trips import Trips
+from travel import Travel
 from terminal_color import color_print
 
 
 class Statistics:
     def __init__(self):
-        pass
-    
-    # def calc_total_distance(self):
-    #     data = self.load_file()
-    #     meter = 0
-    #     for line in data:
-    #         meter += line['distance']
-    #     distance = self.m_to_km(meter)
-    #     return distance
-    
+        self.data = None
+        self.travel = Travel()
+
     def calc_weekly_distance(self, week):
         """
         The method is being called by compare_weeks().
         :param week: int
-        :return:
+        :return: distance (float)
         """
-        data = self.load_file()
+        # data = self.load_file()
         meter = 0
         distance = 0
 
-        for line in data:
-            if week in data.values() is False:
+        # Print which weeks are in the file
+
+        for line in self.data:
+            if week in self.data[0].values() is False:  # AttributeError: 'list' object has no attribute 'values'
                 print('No trips for that week has been saved.')
                 break
             if line['week'] == week:
@@ -38,6 +34,29 @@ class Statistics:
                 distance = self.m_to_km(meter)
 
         return distance
+
+    def calc_weekly_duration(self, week):
+        """
+        The method is being called by compare_weeks().
+        :param week: int
+        :return: duration (float)
+        """
+        # data = self.load_file()
+        # travel = Travel()
+        seconds = 0
+        duration = 0
+
+        # Print which weeks are in the file
+
+        for line in self.data:
+            if week in self.data[0].values() is False:  # AttributeError: 'list' object has no attribute 'values'
+                print('No trips for that week has been saved.')
+                break
+            if line['week'] == week:
+                seconds += line['duration']
+                # duration = self.travel.sec_converter(seconds)
+
+        return seconds
 
     def compare_weeks(self):
         """
@@ -57,11 +76,23 @@ class Statistics:
 
         weeks = week_distances.keys()
         distances = week_distances.values()
-        self.bar_plot(weeks, distances)
-        return weeks, distances  # Should I return any value?
+        self.bar_plot_distance(weeks, distances)
+        input()
+
+        week_durations = {}  # Comprehension?
+        for i in week_numbers.values():
+            week_durations[i] = self.calc_weekly_duration(i)
+
+        weeks = week_durations.keys()
+        durations = list(week_durations.values())
+        for i in range(len(durations)):
+            durations[i] = self.travel.sec_converter(i)
+        self.bar_plot_duration(weeks, durations)
+
+        return weeks, distances, durations  # Should I return any value?
 
     @staticmethod
-    def bar_plot(weeks, distances):  # If the user chooses weeks with a gap in between,
+    def bar_plot_distance(weeks, distances):  # If the user chooses weeks with a gap in between,
         # the x axe will show the weeks in the gap.
         """
         The method is being called by compare_weeks().
@@ -69,30 +100,93 @@ class Statistics:
         :param distances: float
         :return: None
         """
+        # threshold = 150
         ax = plt.figure().gca()
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+        # ax.plot([0., 4.5], [threshold, threshold], "k--")
 
         plt.title('Bike Distance Bar Plot for Chosen Weeks')
         plt.xlabel('Weeks')
         plt.ylabel('Distance in km')
         plt.bar(weeks, distances)
         plt.show()
-    
-    # def calc_duration(self):
-    #     data = self.load_file()
-    #     seconds = 0
-    #     for line in data:
-    #         seconds += line['duration']
-    #     duration = self.sec_converter(seconds)
-    #     return duration
+        """
+        import numpy as np
+        import matplotlib.pyplot as plt
+        
+        # some example data
+        threshold = 43.0
+        values = np.array([30., 87.3, 99.9, 3.33, 50.0])
+        x = range(len(values))
+        
+        # split it up
+        above_threshold = np.maximum(values - threshold, 0)
+        below_threshold = np.minimum(values, threshold)
+        
+        # and plot it
+        fig, ax = plt.subplots()
+        ax.bar(x, below_threshold, 0.35, color="g")
+        ax.bar(x, above_threshold, 0.35, color="r",
+                bottom=below_threshold)
+        
+        # horizontal line indicating the threshold
+        ax.plot([0., 4.5], [threshold, threshold], "k--")
+        
+        fig.savefig("look-ma_a-threshold-plot.png")
+        """
+
+    @staticmethod
+    def bar_plot_duration(weeks, durations):  # If the user chooses weeks with a gap in between,
+        # the x axe will show the weeks in the gap.
+        """
+        The method is being called by compare_weeks().
+        :param weeks: int
+        :param durations: float
+        :return: None
+        """
+        threshold = 150
+        ax = plt.figure().gca()
+        ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+        ax.plot([0., 4.5], [threshold, threshold], "k--")
+
+        plt.title('Bike Trip Durations Bar Plot for Chosen Weeks')
+        plt.xlabel('Weeks')
+        plt.ylabel('Duration')
+        plt.bar(weeks, durations)
+        plt.show()
+        """
+        import numpy as np
+        import matplotlib.pyplot as plt
+
+        # some example data
+        threshold = 43.0
+        values = np.array([30., 87.3, 99.9, 3.33, 50.0])
+        x = range(len(values))
+
+        # split it up
+        above_threshold = np.maximum(values - threshold, 0)
+        below_threshold = np.minimum(values, threshold)
+
+        # and plot it
+        fig, ax = plt.subplots()
+        ax.bar(x, below_threshold, 0.35, color="g")
+        ax.bar(x, above_threshold, 0.35, color="r",
+                bottom=below_threshold)
+
+        # horizontal line indicating the threshold
+        ax.plot([0., 4.5], [threshold, threshold], "k--")
+
+        fig.savefig("look-ma_a-threshold-plot.png")
+        """
 
     def three_longest_trips(self):
         """
         Called by run() in presentation.py, case 3. Prints the three longest trips from a chosen loaded file.
         :return: None
         """
-        data = self.load_file()
-        lengths = [self.m_to_km(line['distance']) for line in data]
+        # print('\nChoose a file to see the three longest trips.')
+        # data = self.load_file()
+        lengths = [self.m_to_km(line['distance']) for line in self.data]
         lengths.sort(reverse=True)
 
         color_print('yellow', '\nThese are the three longest trips you have made:')
@@ -106,10 +200,10 @@ class Statistics:
         Called by run() in presentation.py, case 3. Calculates and prints saved CO2 emissions made not going by car.
         :return: None
         """
-        data = self.load_file()
+        self.data = self.load_file()  # Set the file in self
         emissions = 0
 
-        for line in data:
+        for line in self.data:
             emissions += round((self.m_to_km(line['distance'] * 0.12)), 2)
 
         color_print('yellow', f'\nBy making all your trips by bike you have saved {emissions} kg CO2 equivalents!')
@@ -118,12 +212,6 @@ class Statistics:
     def m_to_km(meter):
         km = meter / 1000
         return km
-
-    # @staticmethod
-    # def sec_converter(time_in_sec):
-    #     time = datetime.timedelta(seconds=time_in_sec)
-    #     time_without_ms = time - datetime.timedelta(microseconds=time.microseconds)
-    #     return time_without_ms
 
     @staticmethod
     def load_file():
