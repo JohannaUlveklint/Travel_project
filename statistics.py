@@ -1,7 +1,7 @@
 import json
 import datetime
 import math
-
+import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
@@ -135,11 +135,16 @@ class Statistics:
         threshold = 150
         ax = plt.figure().gca()
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
-        ax.plot([0., 4.5], [threshold, threshold], "k--")
-
-        # xint = range(min(weeks), max(weeks) + 1)
-        # matplotlib.pyplot.xticks(xint)
         plt.xlim((min(weeks))-0.5, (max(weeks))+0.5)
+
+        # x = range(len(durations))
+        # above_threshold = np.maximum(durations - threshold, 0)
+        # below_threshold = np.minimum(durations, threshold)
+        #
+        # fig, ax = plt.subplots()
+        # ax.bar(x, below_threshold, 0.35, color="g")
+        # ax.bar(x, above_threshold, 0.35, color="r", bottom=below_threshold)
+        ax.plot([(min(weeks))-0.5, (max(weeks))+0.5], [threshold, threshold], "k--")
 
         plt.title('Bike Trip Durations Bar Plot for Chosen Weeks')
         plt.xlabel('Weeks')
@@ -147,6 +152,7 @@ class Statistics:
         plt.bar(weeks, durations)
         plt.show()
         """
+          https://stackoverflow.com/questions/28129606/how-to-create-a-matplotlib-bar-chart-with-a-threshold-line
           import numpy as np
           import matplotlib.pyplot as plt
 
