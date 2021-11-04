@@ -93,7 +93,7 @@ class Travel:
         self.print_forecast_data()
         # input()
 
-        color_print('red', 'Car:')
+        color_print('red', '\nCar:')
         print('====')
         print(f'Car distance {self.m_to_km(cd):.3f} km.\nCar duration {self.sec_converter(cdu)}.')
         color_print('yellow', 'Electric Bike:')

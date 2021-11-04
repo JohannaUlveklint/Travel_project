@@ -70,7 +70,9 @@ class Trips:
                 distance, duration = ebd, ebdu
                 break
             else:
-                color_print('red', 'Please choose [r] for regular or [e] for electric.')
+                color_print('red', 'Bike type has been set to regular.')
+                distance, duration = rbd, rbdu
+                break
 
         trip = {'year': year, 'month': month, 'day': day, 'week': week, 'distance': distance, 'duration': duration}
         self.save_to_json(trip)

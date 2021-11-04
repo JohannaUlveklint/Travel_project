@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
+# import seaborn as sns
 
 from trips import Trips
 from travel import Travel
@@ -39,21 +40,15 @@ class Statistics:
         :param week: int
         :return: duration (float)
         """
-        # data = self.load_file()
-        # travel = Travel()
         seconds = 0
-        duration = 0
-
-        # Print which weeks are in the file
 
         for line in self.data:
             if line['week'] == week:
                 seconds += line['duration']
-                # duration = self.travel.sec_converter(seconds)
 
         return seconds
 
-    def compare_weeks(self):
+    def compare_weeks(self):  # Split up!
         """
         Called by run() in presentation.py, case 3. Compares the total distance made by bike each chosen week and shows
         the result in a bar plot.
@@ -104,7 +99,7 @@ class Statistics:
 
         weeks = week_distances.keys()
         distances = week_distances.values()
-        print('Let us check how far you have gone!')
+        color_print('yellow', "Let's check how far you have gone!")
         input()
         self.bar_plot_distance(weeks, distances)
         input()
@@ -115,10 +110,14 @@ class Statistics:
 
         weeks = week_durations.keys()
         durations = [(duration / 60) for duration in week_durations.values()]
-        color_print('magenta', 'WHO recommends a minimum of 150 minutes physical activity on a moderate level or higher.')
+        color_print('magenta', 'WHO recommends a minimum of 150 minutes physical activity/week on a moderate level or higher.')
         color_print('magenta', 'Do you think your bike trips helped you towards that recommendation?')
         input()
         self.bar_plot_duration(weeks, durations)
+        input()
+        print("Let's look att your distance vs duration!")
+        input()
+        self.scatter_plot()
 
         # Print out different messages depending on how far the user has gone?
 
@@ -134,8 +133,8 @@ class Statistics:
         :return: None
         """
         ax = plt.figure().gca()
-        # ax.xaxis.set_major_locator(MaxNLocator(integer=True))
-        ax.xaxis.get_major_locator().set_params(integer=True)
+        ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+        # ax.xaxis.get_major_locator().set_params(integer=True)
 
         plt.title('Bike Distance Bar Plot for Chosen Weeks')
         plt.xlabel('Weeks')
@@ -143,8 +142,7 @@ class Statistics:
         plt.bar(weeks, distances)
         plt.show()
 
-    @staticmethod
-    def bar_plot_duration(weeks, durations):  # If the user chooses weeks with a gap in between,
+    def bar_plot_duration(self, weeks, durations):  # If the user chooses weeks with a gap in between,
         # the x axe will show the weeks in the gap.
         """
         The method is being called by compare_weeks().
@@ -152,6 +150,7 @@ class Statistics:
         :param durations: float
         :return: None
         """
+        # durations = [(int(line['duration']) / 60) for line in self.data]
         threshold = 150
         ax = plt.figure().gca()
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
@@ -169,7 +168,7 @@ class Statistics:
 
         plt.title('Bike Trip Durations Bar Plot for Chosen Weeks')
         plt.xlabel('Weeks')
-        plt.ylabel('Duration')
+        plt.ylabel('Duration in minutes')
         plt.bar(weeks, durations)
         plt.show()
         """
@@ -197,6 +196,15 @@ class Statistics:
 
           fig.savefig("look-ma_a-threshold-plot.png")
           """
+    def scatter_plot(self):
+        distances = [(int(line['distance']) / 1000) for line in self.data]
+        durations = [(int(line['duration']) / 60) for line in self.data]
+
+        plt.title('Distance vs Duration')
+        plt.xlabel('Distance in km')
+        plt.ylabel('Duration in min')
+        plt.scatter(distances, durations, color='green')
+        plt.show()
 
     def three_longest_trips(self):
         """
@@ -225,7 +233,7 @@ class Statistics:
         for line in self.data:
             emissions += round((self.m_to_km(line['distance'] * 0.12)), 2)
 
-        color_print('cyan', f'\nBy making all your trips by bike you have saved {emissions} kg CO2 equivalents!')
+        color_print('cyan', f'\nBy making all your trips by bike you have saved {round(emissions, 2)} kg CO2 equivalents!')
         return emissions
 
     @staticmethod
