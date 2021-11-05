@@ -11,28 +11,6 @@ class Trips:
         self.logged_trips = []
         self.travel = Travel()
 
-    @staticmethod
-    def __get_user_input(question):
-        """
-        Called by log_trip(). Controls that the user has entered a valid value.
-        :param question: int
-        :return: user_input (int)
-        """
-        user_input = 0
-        while True:
-            color_print('green', question)
-            try:
-                user_input = int(input())
-                if user_input <= 0:
-                    color_print('green', 'You have to enter a integer value greater than 0. Please try again.')
-                    continue
-                else:
-                    break
-            except ValueError:
-                print("Please enter a integer number.")
-                continue
-        return user_input
-
     def log_trip(self):
         """
         Called by run() case 2 in presentation.py. User enters date, starting location and end location and the data
@@ -78,21 +56,26 @@ class Trips:
         self.save_to_json(trip)
 
     @staticmethod
-    def saved_trips():
+    def __get_user_input(question):
         """
-        Called by load_file() in statistics.py, print_trips() and save_to_json(). Lists the saved files.
-        :return: saved_trips (list)
+        Called by log_trip(). Controls that the user has entered a valid value.
+        :param question: int
+        :return: user_input (int)
         """
-        saved_trips = [f.replace('.json', '') for f in listdir('./saved_trips') if f.endswith('.json')]
-
-        print("Saved trips:")
-        if len(saved_trips) == 0:
-            print('There is no saved trips')
-        else:
-            for trip in saved_trips:
-                color_print("yellow", f"\t{trip}")
-
-        return saved_trips
+        user_input = 0
+        while True:
+            color_print('green', question)
+            try:
+                user_input = int(input())
+                if user_input <= 0:
+                    color_print('green', 'You have to enter a integer value greater than 0. Please try again.')
+                    continue
+                else:
+                    break
+            except ValueError:
+                print("Please enter a integer number.")
+                continue
+        return user_input
 
     def save_to_json(self, new_trip):
         """
@@ -119,6 +102,23 @@ class Trips:
             with open('./saved_trips/' + file_name, 'w', encoding='utf-8') as file:
                 json.dump(data, file)
             color_print('yellow', 'Your trip is saved!')
+
+    @staticmethod
+    def saved_trips():
+        """
+        Called by load_file() in statistics.py, print_trips() and save_to_json(). Lists the saved files.
+        :return: saved_trips (list)
+        """
+        saved_trips = [f.replace('.json', '') for f in listdir('./saved_trips') if f.endswith('.json')]
+
+        print("Saved trips:")
+        if len(saved_trips) == 0:
+            print('There is no saved trips')
+        else:
+            for trip in saved_trips:
+                color_print("yellow", f"\t{trip}")
+
+        return saved_trips
 
     def print_trips(self):
         """

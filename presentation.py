@@ -24,7 +24,7 @@ class Presentation:
             color_print('green', 'Press [5] to quit.')
             user_input = input('What do you want to do? ')
 
-            travel = Travel()  # Have these in __init__?
+            travel = Travel()
             trips = Trips()
             statistics = Statistics()
 

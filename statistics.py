@@ -1,11 +1,6 @@
 import json
-import datetime
-import math
-import numpy as np
-import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
-# import seaborn as sns
 
 from trips import Trips
 from travel import Travel
@@ -17,36 +12,54 @@ class Statistics:
         self.data = None
         self.travel = Travel()
 
-    def calc_weekly_distance(self, week):
+    def saved_emissions(self):
         """
-        The method is being called by compare_weeks().
-        :param week: int
-        :return: distance (float)
+        Called by run() in presentation.py, case 3. Calculates and prints saved CO2 emissions made not going by car.
+        :return: None
         """
-        # data = self.load_file()
-        meter = 0
-        distance = 0
+        self.data = self.load_file()
+        emissions = 0
 
         for line in self.data:
-            if line['week'] == week:
-                meter += line['distance']
-                distance = self.m_to_km(meter)
+            emissions += round((self.m_to_km(line['distance'] * 0.12)), 2)
 
-        return distance
+        color_print('cyan', f'\nBy making all your trips by bike you have saved {round(emissions, 2)} kg CO2 equivalents!')
+        return emissions
 
-    def calc_weekly_duration(self, week):
+    @staticmethod
+    def load_file():
         """
-        The method is being called by compare_weeks().
-        :param week: int
-        :return: duration (float)
+        Called by calc_weekly_distance(), saved_emissions() and three_longest_trips. Loads file from ./saved_trips.
+        :return: data (json)
         """
-        seconds = 0
+        trips = Trips()
+        saved_trips = trips.saved_trips()
 
-        for line in self.data:
-            if line['week'] == week:
-                seconds += line['duration']
+        while True:
+            file_name = input('Select the file you want to load: ')
+            if file_name in saved_trips:
+                file_name += '.json'
+                with open('./saved_trips/' + file_name, 'r', encoding='utf-8') as file:
+                    data = json.load(file)
+                break
+            else:
+                print('Could not find a file with that name, please try again.')
 
-        return seconds
+        return data
+
+    def three_longest_trips(self):
+        """
+        Called by run() in presentation.py, case 3. Prints the three longest trips from a chosen loaded file.
+        :return: None
+        """
+        lengths = [self.m_to_km(line['distance']) for line in self.data]
+        lengths.sort(reverse=True)
+
+        color_print('magenta', '\nThese are the three longest trips you have made:')
+        count = 1
+        for i in lengths[:3]:
+            print(f'{count}. {i:.3f} km')
+            count += 1
 
     def compare_weeks(self):
         """
@@ -56,7 +69,7 @@ class Statistics:
         """
         week_numbers = self.choose_weeks()
 
-        week_distances = {}  # Comprehension?
+        week_distances = {}
         for i in week_numbers.values():
             week_distances[i] = self.calc_weekly_distance(i)
 
@@ -108,6 +121,42 @@ class Statistics:
 
         return week_numbers
 
+    def calc_weekly_distance(self, week):
+        """
+        The method is being called by compare_weeks().
+        :param week: int
+        :return: distance (float)
+        """
+
+        meter = 0
+        distance = 0
+
+        for line in self.data:
+            if line['week'] == week:
+                meter += line['distance']
+                distance = self.m_to_km(meter)
+
+        return distance
+
+    def calc_weekly_duration(self, week):
+        """
+        The method is being called by compare_weeks().
+        :param week: int
+        :return: duration (float)
+        """
+        seconds = 0
+
+        for line in self.data:
+            if line['week'] == week:
+                seconds += line['duration']
+
+        return seconds
+
+
+
+
+
+
     def show_plots(self, week_distances, week_numbers):
         """
         Called by compare_weeks(). Calls the plot methods and
@@ -124,7 +173,7 @@ class Statistics:
         input()
 
         # Durations - bar plot
-        week_durations = {}  # Comprehension?
+        week_durations = {}
         for i in week_numbers.values():
             week_durations[i] = self.calc_weekly_duration(i)
         weeks = week_durations.keys()
@@ -156,8 +205,7 @@ class Statistics:
         self.scatter_plot()
 
     @staticmethod
-    def bar_plot_distance(weeks, distances):  # If the user chooses weeks with a gap in between,
-        # the x axe will show the weeks in the gap.
+    def bar_plot_distance(weeks, distances):
         """
         The method is being called by compare_weeks().
         :param weeks: int
@@ -173,28 +221,19 @@ class Statistics:
         plt.bar(weeks, distances)
         plt.show()
 
-    def bar_plot_duration(self, weeks, durations):  # If the user chooses weeks with a gap in between,
-        # the x axe will show the weeks in the gap.
+    @staticmethod
+    def bar_plot_duration(weeks, durations):
         """
-        The method is being called by compare_weeks().
+        Called by compare_weeks().
         :param weeks: int
         :param durations: float
         :return: None
         """
-        # durations = [(int(line['duration']) / 60) for line in self.data]
         threshold = 150
         ax = plt.figure().gca()
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
         plt.xlim((min(weeks))-0.5, (max(weeks))+0.5)
 
-        # If I want to continue working on separate colors below and above threshold:
-        # x = range(len(durations))
-        # above_threshold = np.maximum(max(durations) - threshold, 0)
-        # below_threshold = np.minimum(min(durations), threshold)
-        #
-        # fig, ax = plt.subplots()
-        # ax.bar(x, below_threshold, 0.35, color="g")
-        # ax.bar(x, above_threshold, 0.35, color="r", bottom=below_threshold)
         ax.plot([(min(weeks))-0.5, (max(weeks))+0.5], [threshold, threshold], "k--")
 
         plt.title('Bike Trip Durations Bar Plot for Chosen Weeks')
@@ -202,32 +241,12 @@ class Statistics:
         plt.ylabel('Duration in minutes')
         plt.bar(weeks, durations)
         plt.show()
-        """
-          https://stackoverflow.com/questions/28129606/how-to-create-a-matplotlib-bar-chart-with-a-threshold-line
-          import numpy as np
-          import matplotlib.pyplot as plt
 
-          # some example data
-          threshold = 43.0
-          values = np.array([30., 87.3, 99.9, 3.33, 50.0])
-          x = range(len(values))
-
-          # split it up
-          above_threshold = np.maximum(values - threshold, 0)
-          below_threshold = np.minimum(values, threshold)
-
-          # and plot it
-          fig, ax = plt.subplots()
-          ax.bar(x, below_threshold, 0.35, color="g")
-          ax.bar(x, above_threshold, 0.35, color="r",
-                  bottom=below_threshold)
-
-          # horizontal line indicating the threshold
-          ax.plot([0., 4.5], [threshold, threshold], "k--")
-
-          fig.savefig("look-ma_a-threshold-plot.png")
-          """
     def scatter_plot(self):
+        """
+        Called by compare_weeks().
+        :return: None
+        """
         distances = [(int(line['distance']) / 1000) for line in self.data]
         durations = [(int(line['duration']) / 60) for line in self.data]
 
@@ -237,62 +256,12 @@ class Statistics:
         plt.scatter(distances, durations, color='green')
         plt.show()
 
-    def three_longest_trips(self):
-        """
-        Called by run() in presentation.py, case 3. Prints the three longest trips from a chosen loaded file.
-        :return: None
-        """
-        # print('\nChoose a file to see the three longest trips.')
-        # data = self.load_file()
-        lengths = [self.m_to_km(line['distance']) for line in self.data]
-        lengths.sort(reverse=True)
 
-        color_print('magenta', '\nThese are the three longest trips you have made:')
-        count = 1
-        for i in lengths[:3]:
-            print(f'{count}. {i:.3f} km')
-            count += 1
-
-    def saved_emissions(self):
-        """
-        Called by run() in presentation.py, case 3. Calculates and prints saved CO2 emissions made not going by car.
-        :return: None
-        """
-        self.data = self.load_file()  # Set the file in self
-        emissions = 0
-
-        for line in self.data:
-            emissions += round((self.m_to_km(line['distance'] * 0.12)), 2)
-
-        color_print('cyan', f'\nBy making all your trips by bike you have saved {round(emissions, 2)} kg CO2 equivalents!')
-        return emissions
 
     @staticmethod
     def m_to_km(meter):
         km = meter / 1000
         return km
 
-    @staticmethod
-    def load_file():
-        """
-        Called by calc_weekly_distance(), saved_emissions() and three_longest_trips. Loads file from ./saved_trips.
-        :return: data (json)
-        """
-        trips = Trips()
-        saved_trips = trips.saved_trips()
 
-        while True:
-            file_name = input('Select the file you want to load: ')
-            if file_name in saved_trips:
-                file_name += '.json'
-                with open('./saved_trips/' + file_name, 'r', encoding='utf-8') as file:
-                    data = json.load(file)
-                break
-            else:
-                print('Could not find a file with that name, please try again.')
 
-        return data
-
-    """
-    20% lower risk for premature death with 150 minutes of physical activity/week on a least moderate level.
-    """

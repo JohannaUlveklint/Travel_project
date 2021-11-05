@@ -1,10 +1,8 @@
 import datetime
-import json
 import webbrowser
 
 import requests
 from geopy.geocoders import Nominatim
-import clipboard
 from terminal_color import color_print
 
 
@@ -15,74 +13,12 @@ class Travel:
         self.to_lat = to_latitude
         self.to_long = to_longitude
 
-    def get_lat_and_long(self):
-        """
-        Called by get_distance_and_duration(). Gets latitude and longitude for chosen addresses using Nominatim.
-        :return: self.from_lat, self.from_long, self.to_lat, self.to_long
-        """
-        geolocator = Nominatim(user_agent="my_application", timeout=15)
-        from_address = input('Enter <street> <street number> <city> of your start destination or try a public place: ')
-        # from_address = 'Övre Hallegatan 50 Göteborg'
-        from_location = geolocator.geocode(from_address)
-        self.from_lat = str(from_location.latitude)
-        self.from_long = str(from_location.longitude)
-
-        to_address = input('Enter <street> <street number> <city> of your end destination or try a public place: ')
-        # to_address = 'Anders Personsgatan 14 Göteborg'
-        to_location = geolocator.geocode(to_address)
-        self.to_lat = str(to_location.latitude)
-        self.to_long = str(to_location.longitude)
-
-        return self.from_lat, self.from_long, self.to_lat, self.to_long
-
-    def get_route(self):
-        """
-        Called by get_distance_and_duration(). Using Open Route Service API to get routes between a and b by car,
-        regular bike and electric bike.
-        :return: list with json-files
-        """
-        api_key = "5b3ce3597851110001cf6248d62eca3e4d314dba96c2e5596a0f8074"
-
-        if not all([self.from_long, self.from_lat, self.to_long, self.to_lat]):  # If any is missing values (=None)
-            print("Missing geo-coordinates")
-            return None, None, None
-
-        search = f'api_key={api_key}&start={self.from_long},{self.from_lat}&end={self.to_long},{self.to_lat}'
-        base_url = 'https://api.openrouteservice.org/v2/directions/'
-        vehicles = ['driving-car', 'cycling-regular', 'cycling-electric']
-
-        response = [requests.get(f"{base_url}{v}?" + search) for v in vehicles]
-        for i in response:
-            if not i.ok:
-                return 'Bad Request!'
-        response = [line.json() for line in response]
-        return response
-
-    def get_distance_and_duration(self):
-        """
-        Called by print_route_data(). Reads distance and duration from json-file for chosen route by car,
-        regular bike and electric bike.
-        :return: car_distance, reg_bike_distance, elect_bike_distance, car_duration, reg_bike_duration, elect_bike_duration
-        """
-        self.get_lat_and_long()
-        car_route, reg_bike_route, elect_bike_route = self.get_route()
-        # Make as loop?
-        car_distance = car_route['features'][0]['properties']['segments'][0]['distance']
-        reg_bike_distance = reg_bike_route['features'][0]['properties']['segments'][0]['distance']
-        elect_bike_distance = elect_bike_route['features'][0]['properties']['segments'][0]['distance']
-
-        car_duration = car_route['features'][0]['properties']['segments'][0]['duration']
-        reg_bike_duration = reg_bike_route['features'][0]['properties']['segments'][0]['duration']
-        elect_bike_duration = elect_bike_route['features'][0]['properties']['segments'][0]['duration']
-
-        return car_distance, reg_bike_distance, elect_bike_distance, car_duration, reg_bike_duration, elect_bike_duration
-
     def print_route_data(self):
         """
         Called by run() case 1 in presentation.py. Shows map of route (by car), a weather forecast and the distance and
         duration for the route made by car, regular bike and electric bike. Prints the differences in duration and CO2
         emissions if going by car.
-        :return: ?
+        :return: None
         """
         cd, rbd, ebd, cdu, rbdu, ebdu = self.get_distance_and_duration()
 
@@ -103,7 +39,6 @@ class Travel:
         print(f'Regular bike distance {self.m_to_km(rbd):.3f} km.\nRegular bike duration {self.sec_converter(rbdu)}.')
         print('==============================')
 
-        # Change bold to colors?
         print(f'If you go this trip by bike you only would have to add '
               f'' + '\033[1m' + f'{self.sec_converter(rbdu) - self.sec_converter(cdu)}' + '\033[0m' + ' to your travel '
               'time. '
@@ -122,7 +57,48 @@ class Travel:
         color_print('magenta', '\033[1m' + 'So Whats __init__ For You?' + '\033[0m' + ' A stronger body, more spare '
                     'time and a super hero cape. The choice is yours.')
 
-        return cd, rbd, ebd, cdu, rbdu, ebdu  # Shall I return anything?
+
+
+    def get_lat_and_long(self):
+        """
+        Called by get_distance_and_duration(). Gets latitude and longitude for chosen addresses using Nominatim.
+        :return: self.from_lat, self.from_long, self.to_lat, self.to_long
+        """
+        geolocator = Nominatim(user_agent="my_application", timeout=15)
+        from_address = input('Enter <street> <street number> <city> of your start destination or try a public place: ')
+        from_location = geolocator.geocode(from_address)
+        self.from_lat = str(from_location.latitude)
+        self.from_long = str(from_location.longitude)
+
+        to_address = input('Enter <street> <street number> <city> of your end destination or try a public place: ')
+        to_location = geolocator.geocode(to_address)
+        self.to_lat = str(to_location.latitude)
+        self.to_long = str(to_location.longitude)
+
+        return self.from_lat, self.from_long, self.to_lat, self.to_long
+
+    def get_route(self):
+        """
+        Called by get_distance_and_duration(). Using Open Route Service API to get routes between a and b by car,
+        regular bike and electric bike.
+        :return: list with json-files
+        """
+        api_key = "5b3ce3597851110001cf6248d62eca3e4d314dba96c2e5596a0f8074"
+
+        if not all([self.from_long, self.from_lat, self.to_long, self.to_lat]):
+            print("Missing geo-coordinates")
+            return None, None, None
+
+        search = f'api_key={api_key}&start={self.from_long},{self.from_lat}&end={self.to_long},{self.to_lat}'
+        base_url = 'https://api.openrouteservice.org/v2/directions/'
+        vehicles = ['driving-car', 'cycling-regular', 'cycling-electric']
+
+        response = [requests.get(f"{base_url}{v}?" + search) for v in vehicles]
+        for i in response:
+            if not i.ok:
+                return 'Bad Request!'
+        response = [line.json() for line in response]
+        return response
 
     @staticmethod
     def get_map(from_lat, from_long, to_lat, to_long):
@@ -143,30 +119,6 @@ class Travel:
         else:
             return 'Bad Request!'
 
-    @staticmethod
-    def sec_converter(time_in_sec):
-        time = datetime.timedelta(seconds=time_in_sec)
-        time_without_ms = time - datetime.timedelta(microseconds=time.microseconds)
-        return time_without_ms
-
-    @staticmethod
-    def m_to_km(meter):
-        km = meter / 1000
-        return km
-
-    def get_forecast_data(self):
-        """
-        Called by print_forecast_data(). Get current weather and a forecast with Open Weather Map API.
-        :return: response.json or 'Bad Request!'
-        """
-        key = 'ab4bdc6adfd6dc3dbe1e9c8ee0b87537'
-        base = 'https://api.openweathermap.org/data/2.5/onecall?lat='
-        response = requests.get(f'{base}{self.from_lat}&lon={self.from_long}&exclude=minutely,hourly,alerts&units=metric&appid={key}')
-        if response.ok:
-            return response.json()
-        else:
-            return 'Bad Request! No weather forecast was found.'
-
     def print_forecast_data(self):
         """
         Called by print_route_data(). Prints weather and expected precipitation (rain) for current day. If it is no rain
@@ -183,6 +135,19 @@ class Travel:
         else:
             print("No expected rain in today's forecast.")
 
+    def get_forecast_data(self):
+        """
+        Called by print_forecast_data(). Get current weather and a forecast with Open Weather Map API.
+        :return: response.json or 'Bad Request!'
+        """
+        key = 'ab4bdc6adfd6dc3dbe1e9c8ee0b87537'
+        base = 'https://api.openweathermap.org/data/2.5/onecall?lat='
+        response = requests.get(f'{base}{self.from_lat}&lon={self.from_long}&exclude=minutely,hourly,alerts&units=metric&appid={key}')
+        if response.ok:
+            return response.json()
+        else:
+            return 'Bad Request! No weather forecast was found.'
+
     @staticmethod
     def deg_to_compass(num):
         """
@@ -193,3 +158,15 @@ class Travel:
         val = int(num / 45)
         arr = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
         return arr[(val % 8)]
+
+    @staticmethod
+    def sec_converter(time_in_sec):
+        time = datetime.timedelta(seconds=time_in_sec)
+        time_without_ms = time - datetime.timedelta(microseconds=time.microseconds)
+        return time_without_ms
+
+    @staticmethod
+    def m_to_km(meter):
+        km = meter / 1000
+        return km
+

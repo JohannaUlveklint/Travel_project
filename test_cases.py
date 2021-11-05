@@ -1,10 +1,7 @@
-import datetime
-import json
 import os
 import unittest
-from unittest.mock import patch, mock_open, call, Mock
+from unittest.mock import patch
 
-import trips
 from travel import Travel
 from statistics import Statistics
 from trips import Trips
@@ -37,7 +34,7 @@ class TestTravel(unittest.TestCase):
                 "distance": 5316.2,
                 "duration": 1066.4
             }
-        with patch('builtins.input', return_value='test_data'):  # Mocks input in save_to_json()
+        with patch('builtins.input', return_value='test_data'):
             self.trips.save_to_json(sample_json)
             loaded = self.statistics.load_file()
         self.assertEqual([sample_json], loaded)
