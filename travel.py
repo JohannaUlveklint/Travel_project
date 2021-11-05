@@ -20,13 +20,13 @@ class Travel:
         :return: self.from_lat, self.from_long, self.to_lat, self.to_long
         """
         geolocator = Nominatim(user_agent="my_application", timeout=15)
-        from_address = input('Enter <street> <street number> <city> of your start destination: ')
+        from_address = input('Enter <street> <street number> <city> of your start destination or try a public place: ')
         # from_address = 'Övre Hallegatan 50 Göteborg'
         from_location = geolocator.geocode(from_address)
         self.from_lat = str(from_location.latitude)
         self.from_long = str(from_location.longitude)
 
-        to_address = input('Enter <street> <street number> <city> of your end destination: ')
+        to_address = input('Enter <street> <street number> <city> of your end destination or try a public place: ')
         # to_address = 'Anders Personsgatan 14 Göteborg'
         to_location = geolocator.geocode(to_address)
         self.to_lat = str(to_location.latitude)
