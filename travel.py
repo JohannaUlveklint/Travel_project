@@ -1,5 +1,6 @@
 import datetime
 import json
+import webbrowser
 
 import requests
 from geopy.geocoders import Nominatim
@@ -86,12 +87,10 @@ class Travel:
         cd, rbd, ebd, cdu, rbdu, ebdu = self.get_distance_and_duration()
 
         map_url = self.get_map(self.from_lat, self.from_long, self.to_lat, self.to_long)
-        clipboard.copy(map_url)
-        print('Please open a web browser and enter Ctrl + V to see your trip on a map!')
+        webbrowser.open(map_url)
         input()
 
         self.print_forecast_data()
-        # input()
 
         color_print('red', '\nCar:')
         print('====')

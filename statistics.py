@@ -48,13 +48,25 @@ class Statistics:
 
         return seconds
 
-    def compare_weeks(self):  # Split up!
+    def compare_weeks(self):
         """
-        Called by run() in presentation.py, case 3. Compares the total distance made by bike each chosen week and shows
-        the result in a bar plot.
-        :return: ?
+        Called by run() in presentation.py, case 3. Compares the total distance and duration
+        made by bike each chosen week.
+        :return: None
         """
-        # global num_of_weeks
+        week_numbers = self.choose_weeks()
+
+        week_distances = {}  # Comprehension?
+        for i in week_numbers.values():
+            week_distances[i] = self.calc_weekly_distance(i)
+
+        self.show_plots(week_distances, week_numbers)
+
+    def choose_weeks(self):
+        """
+        Called by compare_weeks(). The user chooses weeks to compare.
+        :return: week_numbers (dict)
+        """
         color_print('yellow', "\nLet's compare the distances you have cycled on a week to week basis!")
 
         logged_weeks = {line['week'] for line in self.data}
@@ -94,10 +106,16 @@ class Statistics:
                 else:
                     print('Please enter a valid number.')
 
-        week_distances = {}  # Comprehension?
-        for i in week_numbers.values():
-            week_distances[i] = self.calc_weekly_distance(i)
+        return week_numbers
 
+    def show_plots(self, week_distances, week_numbers):
+        """
+        Called by compare_weeks(). Calls the plot methods and
+        :param week_distances: dict
+        :param week_numbers: dict
+        :return: None
+        """
+        # Distances - bar plot
         weeks = week_distances.keys()
         distances = week_distances.values()
         color_print('yellow', "Let's check how far you have gone!")
@@ -105,18 +123,19 @@ class Statistics:
         self.bar_plot_distance(weeks, distances)
         input()
 
+        # Durations - bar plot
         week_durations = {}  # Comprehension?
         for i in week_numbers.values():
             week_durations[i] = self.calc_weekly_duration(i)
-
         weeks = week_durations.keys()
         durations = [(duration / 60) for duration in week_durations.values()]
-        color_print('blue', 'WHO recommends a minimum of 150 minutes physical activity/week on a moderate level or higher.')
+        color_print('blue',
+                    'WHO recommends a minimum of 150 minutes physical activity/week on a moderate level or higher.')
         color_print('blue', 'Do you think your bike trips helped you towards that recommendation?')
         input()
-        self.bar_plot_duration(weeks, durations)
 
-        # if min(lst) > a and max(lst) < b:
+        self.bar_plot_duration(weeks, durations)
+        # Comments to the user related to the bar_plot_duration()-plot.
         if max(durations) <= 30:
             color_print('magenta', 'All trips made by bike are better than not taking the bike at all!')
         elif min(durations) > 30 and max(durations) < 100:
@@ -130,12 +149,11 @@ class Statistics:
         if max(durations) > 600:
             color_print('magenta', "Giro d'Italia, here I come!")
         input()
+
+        # Distance vs Duration - scatter plot
         color_print('cyan', "Let's look att your distance vs duration!")
         input()
         self.scatter_plot()
-
-
-        return weeks, distances, durations  # Should I return any value?
 
     @staticmethod
     def bar_plot_distance(weeks, distances):  # If the user chooses weeks with a gap in between,
@@ -148,7 +166,6 @@ class Statistics:
         """
         ax = plt.figure().gca()
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
-        # ax.xaxis.get_major_locator().set_params(integer=True)
 
         plt.title('Bike Distance Bar Plot for Chosen Weeks')
         plt.xlabel('Weeks')
