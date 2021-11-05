@@ -58,7 +58,8 @@ class Statistics:
         color_print('yellow', "\nLet's compare the distances you have cycled on a week to week basis!")
 
         logged_weeks = {line['week'] for line in self.data}
-        print('You have logged trips from these weeks:')
+        x_saved_weeks = len(logged_weeks)
+        print(f'You have logged trips from these {x_saved_weeks} weeks:')
         for i in logged_weeks:
             color_print('green', i)
 
