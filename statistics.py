@@ -128,7 +128,7 @@ class Statistics:
         if max(durations) > 300:
             color_print('magenta', 'Look at that week: 2 * WHO!')
         if max(durations) > 600:
-            color_print('magenta', 'Just like Armstrong, only not on steroids.')
+            color_print('magenta', "Giro d'Italia, here I come!")
         input()
         color_print('cyan', "Let's look att your distance vs duration!")
         input()
