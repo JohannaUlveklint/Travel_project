@@ -23,7 +23,8 @@ class Statistics:
         for line in self.data:
             emissions += round((self.m_to_km(line['distance'] * 0.12)), 2)
 
-        color_print('cyan', f'\nBy making all your trips by bike you have saved {round(emissions, 2)} kg CO2 equivalents!')
+        color_print('cyan', f'\nBy making all your trips by bike you have saved {round(emissions, 2)} '
+                            f'kg CO2 equivalents!')
         return emissions
 
     @staticmethod
@@ -152,11 +153,6 @@ class Statistics:
 
         return seconds
 
-
-
-
-
-
     def show_plots(self, week_distances, week_numbers):
         """
         Called by compare_weeks(). Calls the plot methods and
@@ -256,12 +252,7 @@ class Statistics:
         plt.scatter(distances, durations, color='green')
         plt.show()
 
-
-
     @staticmethod
     def m_to_km(meter):
         km = meter / 1000
         return km
-
-
-

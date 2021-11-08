@@ -57,7 +57,26 @@ class Travel:
         color_print('magenta', '\033[1m' + 'So Whats __init__ For You?' + '\033[0m' + ' A stronger body, more spare '
                     'time and a super hero cape. The choice is yours.')
 
+    def get_distance_and_duration(self):
+        """
+        Called by print_route_data(). Reads distance and duration from json-file for chosen route by car,
+        regular bike and electric bike.
+        :return: car_distance, reg_bike_distance, elect_bike_distance, car_duration, reg_bike_duration,
+        elect_bike_duration
+        """
+        self.get_lat_and_long()
+        car_route, reg_bike_route, elect_bike_route = self.get_route()
+        # Make as loop?
+        car_distance = car_route['features'][0]['properties']['segments'][0]['distance']
+        reg_bike_distance = reg_bike_route['features'][0]['properties']['segments'][0]['distance']
+        elect_bike_distance = elect_bike_route['features'][0]['properties']['segments'][0]['distance']
 
+        car_duration = car_route['features'][0]['properties']['segments'][0]['duration']
+        reg_bike_duration = reg_bike_route['features'][0]['properties']['segments'][0]['duration']
+        elect_bike_duration = elect_bike_route['features'][0]['properties']['segments'][0]['duration']
+
+        return car_distance, reg_bike_distance, elect_bike_distance, car_duration, reg_bike_duration, \
+               elect_bike_duration
 
     def get_lat_and_long(self):
         """
@@ -142,7 +161,8 @@ class Travel:
         """
         key = 'ab4bdc6adfd6dc3dbe1e9c8ee0b87537'
         base = 'https://api.openweathermap.org/data/2.5/onecall?lat='
-        response = requests.get(f'{base}{self.from_lat}&lon={self.from_long}&exclude=minutely,hourly,alerts&units=metric&appid={key}')
+        response = requests.get(f'{base}{self.from_lat}&lon={self.from_long}&exclude=minutely,hourly,alerts&units='
+                                f'metric&appid={key}')
         if response.ok:
             return response.json()
         else:
@@ -169,4 +189,3 @@ class Travel:
     def m_to_km(meter):
         km = meter / 1000
         return km
-

@@ -143,4 +143,3 @@ class Trips:
 
         print(f'Totally, you have gone {total_distance:.3f} km by bike, great work!')
         print('======================================================')
-
